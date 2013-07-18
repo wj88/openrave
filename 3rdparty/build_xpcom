@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# A simple script to reproduce the Mozilla XPCOM library.
+#
+# Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+
+cvs -d :pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co -r MOZILLA_1_8_BRANCH mozilla/client.mk
+
+# If we failed to use cvs, exit.
+if [ ! -d mozilla ]; then
+	exit 1;
+fi
+
+cd mozilla
+
+cat > .mozconfig << EOF
+mk_add_options MOZ_OBJDIR=@topsrcdir@/obj-build
+ac_add_options --enable-application=standalone
+ac_add_options --disable-xul
+ac_add_options --disable-javaxpcom
+ac_add_options --enable-modules=xpcom
+ac_add_options --enable-standalone-modules=xpcom
+ac_add_options --disable-tests
+EOF
+
+make -f client.mk checkout MOZ_CO_PROJECT=xulrunner
+make -f client.mk pull_all BUILD_MODULES=xpcom
+make -f client.mk build
+make -f client.mk build $(nproc)
+

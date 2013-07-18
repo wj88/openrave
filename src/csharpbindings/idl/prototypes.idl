@@ -1,0 +1,210 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#include "nsISupports.idl"
+#include "nsIInputStream.idl"
+#include "nsIOutputStream.idl"
+#include "nsIProperties.idl"
+
+# Defined in support.idl
+interface IMutex;
+
+# Defined in callbacks.idl
+interface ICallback;
+interface ICallbackUserCheck;
+
+# Defined in collisionchecker.idl
+interface ICollisionReport;
+interface ICollisionReportContact;
+interface ICollisionCheckerBase;
+interface ICollisionOptionsStateSaver;
+
+# Defined in controller.idl
+interface IControllerBase;
+interface IMultiController;
+
+# Defined in environment.idl
+interface ICallbackCollision;
+interface IEnvironmentMutex;
+interface IEnvironmentBase;
+
+# Defined in geometry.idl
+interface IVectorF;
+interface ITransformF;
+interface ITransformMatrixF;
+interface IRayF;
+interface IAABBF;
+interface IOrientedBoxF;
+interface IOBBF;
+interface ITriangleF;
+interface IFrustamF;
+interface ICameraIntrinsicsF;
+
+# Defined in iksolver.idl
+interface ICallbackIkFilter;
+interface IIkReturnCustomDataKVP;
+interface IIkReturn;
+interface IIkSolverBaseSolution;
+interface IIkSolverBase;
+
+# Defined in interface.idl
+interface ICallbackInterfaceCommand;
+interface IInterfaceCommand;
+interface IInterfaceBase;
+
+# Defined in kinbody.idl
+interface IKinBodyGeometryInfo;
+interface IKinBodyLinkInfoExtraGeometryKVP;
+interface IKinBodyLinkInfo;
+interface IKinBodyLinkGeometry;
+interface IKinBodyLink;
+interface IKinBodyMimicInfo;
+interface IKinBodyMimicDOFFormat;
+interface IKinBodyMimicDOFHierarchy;
+interface IKinBodyMimic;
+interface IKinBodyJointInfo;
+interface IKinBodyJoint;
+interface IKinBodyState;
+interface IKinBodyManageData;
+interface IKinBodyStateSaver;
+interface IKinBody;
+
+# Defined in mathextra.idl
+# None - see note in file.
+
+# Defined in module.idl
+interface IModuleBase;
+
+# Defined in openrave.idl
+interface ICallbackSetConfigurationState;
+interface ICallbackGetConfigurationState;
+interface IUserData;
+interface ISerializableData;
+interface IXMLReadable;
+interface IBaseXMLReader;
+interface IDummyXMLReader;
+interface IBaseXMLWriter;
+interface IConfigurationSpecificationReader;
+interface IConfigurationSpecificationGroup;
+interface IConfigurationSpecification;
+interface IIkParameterization;
+interface ITriMesh;
+
+# Defined in physicengine.idl
+interface IPhysicsEngineBase;
+
+# Defined in planner.idl
+interface ICallbackPlan;
+interface ICallbackProcessF1;
+interface ICallbackProcessF2;
+interface IConstraintFilterReturn;
+interface IPlannerBaseParametersStateSaver;
+interface IPlannerBaseParameters;
+interface IPlannerProgress;
+interface IPlannerBase;
+
+# Defined in plannerparameters.idl
+interface IExplorationParameters;
+interface IRAStarParameters;
+interface IGraspSetParameters;
+interface IGraspParameters;
+interface ITrajectoryTimingParameters;
+interface IConstraintTrajectoryTimingParameters;
+interface IWorkspaceTrajectoryParameters;
+interface IRRTParameters;
+interface IBasicRRTParameters;
+
+# Defined in planningutils.idl
+interface IActiveDOFTrajectorySmoother;
+interface IActiveDOFTrajectoryRetimer;
+interface IAffineTrajectoryRetimer;
+interface IDHParameter;
+interface IDynamicsCollisionConstraint;
+interface ILineCollisionConstraint;
+interface ISimpleDistanceMetric;
+interface ISimpleNeighborhoodSampler;
+interface IManipulatorIKGoalSampler;
+
+# Defined in plugin.idl
+# None
+
+# Defined in plugininfo.idl
+interface IPluginInfoMap;
+interface IPluginInfo;
+
+# Defined in robot.idl
+interface IRobotManipulatorInfo;
+interface IRobotManipulator;
+interface IRobotAttachedSensorInfo;
+interface IRobotAttachedSensor;
+interface IRobotGrabbedInfo;
+interface IRobotStateSaver;
+interface IRobotBase;
+
+# Defined in sensor.idl
+interface ICallbackSensorData;
+interface ISensorData;
+interface ISensorLaserData;
+interface ISensorCameraData;
+interface ISensorJontEncoderData;
+interface ISensorForce6DData;
+interface ISensorIMUData;
+interface ISensorOdometryData;
+interface ISensorTactileData;
+interface ISensorActuatorData;
+interface ISensorGeometry;
+interface ISensorGeometryLaserData;
+interface ISensorGeometryCameraData;
+interface ISensorGeometryJointEncoderData;
+interface ISensorGeometryForce6DData;
+interface ISensorGeometryIMUData;
+interface ISensorGeometryOdometryData;
+interface ISensorGeometryTactileDataFriction;
+interface ISensorGeometryTactileData;
+interface ISensorGeometryActuatorData;
+interface ISensorBase;
+
+# Defined in sensorsystem.idl
+interface ISensorSystemBase;
+interface ISimpleSensorSystemXMLData;
+interface ISimpleSensorSystemBodyData;
+interface ISimpleSensorSystemSimpleXMLReader;
+interface ISimpleSensorSystem;
+
+# Defined in spacesampler.idl
+interface ISpaceSamplerBase;
+
+# Defined in trajectory.idl
+interface ITrajectoryBase;
+
+# Defined in utils.idl
+# None - see note in file.
+
+# Defined in viewer.idl
+interface ICallbackViewerImage;
+interface ICallbackItemSelection;
+interface IGraphHandle;
+interface IViewerBase;
+
+# Defined in xmlreaders.idl
+interface IStringXMLReadable;
+interface IHierarchicalXMLReadable;
+interface ITrajectoryReader;
+interface IGeometryInfoReader;
+interface IHierarchicalXMLReader;
+interface IStreamXMLWriter;

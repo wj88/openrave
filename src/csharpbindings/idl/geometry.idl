@@ -1,0 +1,117 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/geometry.h
+#
+# TODO: Assign the non-member functions defined in /include/openrave/geometry.h to
+# 		specific member functions in the appropriate interface.
+
+#include "prototypes.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IVectorF : nsISupports {
+	attribute float X;
+	attribute float Y;
+	attribute float Z;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ITransformF : nsISupports {
+	attribute float W;
+	attribute float X;
+	attribute float Y;
+	attribute float Z;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ITransformMatrixF : nsISupports {
+	attribute float m1;
+	attribute float m2;
+	attribute float m3;
+	attribute float m4;
+	attribute float m5;
+	attribute float m6;
+	attribute float m7;
+	attribute float m8;
+	attribute float m9;
+	attribute float m10;
+	attribute float m11;
+	attribute float m12;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRayF : nsISupports {
+	attribute IVectorF pos;
+	attribute IVectorF dir;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IAABBF : nsISupports {
+	attribute IVectorF vpos;
+	attribute IVectorF vextents;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IOrientedBoxF : nsISupports {
+	attribute ITransformF tranform;
+	attribute IVectorF extents;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IOBBF : nsISupports {
+	attribute IVectorF right;
+	attribute IVectorF up;
+	attribute IVectorF direction;
+	attribute IVectorF position;
+	attribute IVectorF extents;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ITriangleF : nsISupports {
+	attribute IVectorF v1;
+	attribute IVectorF v2;
+	attribute IVectorF v3;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IFrustamF : nsISupports {
+	attribute IVectorF right;
+	attribute IVectorF up;
+	attribute IVectorF direction;
+	attribute IVectorF position;
+	attribute float fnear;
+	attribute float ffar;
+	attribute float ffovx;
+	attribute float ffovy;
+	attribute float fcosfovx;
+	attribute float fsinfovx;
+	attribute float fcosfovy;
+	attribute float fsinfovy;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICameraIntrinsicsF : nsISupports {
+	attribute float fx;
+	attribute float fy;
+	attribute float cx;
+	attribute float cy;
+    attribute string distortion_model;
+	void GetDistortionCoeffs(out unsigned long count, [array, size_is(count)] out float distortion_coeffs);
+	void SetDistortionCoeffs(in unsigned long count, [array, size_is(count)] in float distortion_coeffs);
+    attribute float focal_length;
+};

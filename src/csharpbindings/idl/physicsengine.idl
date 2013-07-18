@@ -1,0 +1,48 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/physicsengine.h
+# The enum PhysicsEngineOptions needs defining within the target language.
+
+#include "prototypes.idl"
+#include "interface.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IPhysicsEngineBase : IInterfaceBase {
+	#PhysicsEngineBase(EnvironmentBasePtr penv) : InterfaceBase(PT_PhysicsEngine, penv);
+    #~PhysicsEngineBase();
+	boolean SetPhysicsOptions(in long physicsoptions);
+    long GetPhysicsOptions();
+	boolean InitEnvironment();
+	void DestroyEnvironment();
+	boolean InitKinBody(in IKinBody body);
+    void RemoveKinBody(in IKinBody body);
+    boolean SetLinkVelocity(in IKinBodyLink link, in IVectorF linearvel, in IVectorF angularvel);
+	# Hmmm... will have to work out a way of doing this (line 80)
+	#boolean SetLinkVelocities(in IKinBody body, const std::vector<std::pair<Vector,Vector> >& velocities) = 0;
+    #virtual bool GetLinkVelocities(in IKinBody body, std::vector<std::pair<Vector,Vector> >& velocities) = 0;
+    boolean GetLinkVelocity(in IKinBodyLink link, out IVectorF linearvel, out IVectorF angularvel);
+    boolean SetBodyForce(in IKinBodyLink link, in IVectorF force, in IVectorF position, in boolean bAdd);
+    boolean SetBodyTorque(in IKinBodyLink link, in IVectorF torque, in boolean bAdd);
+	boolean AddJointTorque(in IKinBodyJoint pjoint, in unsigned long countTorques, [array, size_is(countTorques)] out float pTorques);
+	boolean GetJointForceTorque(in IKinBodyJoint joint, out IVectorF force, out IVectorF torque);
+	void SetGravity(in IVectorF gravity);
+    IVectorF GetGravity();
+	void SimulateStep(in float fTimeElapsed);
+	boolean SetBodyVelocity(in IKinBody body, in unsigned long vLinearVelocitiesCount, [array, size_is(vLinearVelocitiesCount)] in IVectorF vLinearVelocities, in unsigned long vAngularVelocitiesCount, [array, size_is(vAngularVelocitiesCount)] in IVectorF vAngularVelocities);
+};

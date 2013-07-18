@@ -1,0 +1,125 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/environment.h
+# The enum SelectionOptions needs defining within the target language.
+
+#include "prototypes.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackCollision : nsISupports {
+	long Invoke(in ICollisionReport report, in boolean collided);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IEnvironmentMutex : nsISupports {
+
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IEnvironmentBase : nsISupports {
+	#EnvironmentBase();
+    #~EnvironmentBase();
+	void Destroy();
+	void Reset();
+	void SetUserData(in IUserData data);
+	IUserData GetUserData();
+	IUserData GlobalState();
+	void OwnInterface(in IInterfaceBase pinterface);
+	void DisownInterface(in IInterfaceBase pinterface);
+	IEnvironmentBase CloneSelf(in long options);
+	void Clone(in IEnvironmentBase preference, in long cloningoptions);
+	boolean SetCollisionChecker(in ICollisionCheckerBase pchecker);
+	ICollisionCheckerBase GetCollisionChecker();
+	boolean CheckCollision1(in IKinBody pbody1, out ICollisionReport report);
+	boolean CheckCollision2(in IKinBody pbody1, in IKinBody pbody2, out ICollisionReport report);
+	boolean CheckCollision3(in IKinBodyLink plink, out ICollisionReport report);
+	boolean CheckCollision4(in IKinBodyLink plink1, in IKinBodyLink plink2, out ICollisionReport report);
+	boolean CheckCollision5(in IKinBodyLink plink, in IKinBody pbody, out ICollisionReport report);
+	boolean CheckCollision6(in IKinBodyLink plink, in unsigned long vbodyexcludedcount, [array, size_is(vbodyexcludedcount)] in IKinBody vbodyexcluded, in unsigned long vlinkexcludedcount, [array, size_is(vlinkexcludedcount)] in IKinBodyLink vlinkexcluded, out ICollisionReport report);
+	boolean CheckCollision7(in IKinBody pbody, in unsigned long vbodyexcludedcount, [array, size_is(vbodyexcludedcount)] in IKinBody vbodyexcluded, in unsigned long vlinkexcludedcount, [array, size_is(vlinkexcludedcount)] in IKinBodyLink vlinkexcluded, out ICollisionReport report);
+	boolean CheckCollision8(in IRayF ray, in IKinBodyLink plink, out ICollisionReport report);
+	boolean CheckCollision9(in IRayF ray, in IKinBody pbody, out ICollisionReport report);
+	boolean CheckCollision10(in IRayF ray, in ICollisionReport report);
+	boolean CheckStandaloneSelfCollision(in IKinBody pbody, out ICollisionReport report);
+	IUserData RegisterCollisionCallback(in ICallbackCollision callback);
+	boolean HasRegisteredCollisionCallbacks();
+	void GetRegisteredCollisionCallbacks(out unsigned long count, [array, size_is(count)] out ICallbackCollision functions);
+	boolean SetPhysicsEngine(in IPhysicsEngineBase physics);
+	IPhysicsEngineBase GetPhysicsEngine();
+	void StepSimulation(in float timeStep);
+	void StartSimulation(in float fDeltaTime, in boolean bRealTime);
+	void StopSimulation();
+	boolean IsSimulationRunning();
+	unsigned long long GetSimulationTime();
+	boolean Load(in string filename, in nsIProperties atts);
+	boolean LoadURI(in string filename, in nsIProperties atts);
+	boolean LoadData(in string data, in nsIProperties atts);
+	boolean LoadXMLData(in string data, in nsIProperties atts);
+	void Save(in string filename, in long options, in nsIProperties atts);
+	IRobotBase ReadRobotURI1(in IRobotBase robot, in string filename, in nsIProperties atts);
+    IRobotBase ReadRobotXMLFile1(in IRobotBase robot, in string filename, in nsIProperties atts);
+    IRobotBase ReadRobotURI2(in string filename);
+	IRobotBase ReadRobotXMLFile2(in string filename);
+	IRobotBase ReadRobotData3(in IRobotBase robot, in string data, in nsIProperties atts);
+    IRobotBase ReadRobotXMLData3(in IRobotBase robot, in string data, in nsIProperties atts);
+    IKinBody ReadKinBodyURI1(in IKinBody body, in string filename, in nsIProperties atts);
+    IKinBody ReadKinBodyXMLFile1(in IKinBody body, in string filename, in nsIProperties atts);
+    IKinBody ReadKinBodyURI2(in string filename);
+    IKinBody ReadKinBodyXMLFile2(in string filename);
+    IKinBody ReadKinBodyData3(in IKinBody body, in string data, in nsIProperties atts);
+    IKinBody ReadKinBodyXMLData3(in IKinBody body, in string data, in nsIProperties atts);
+	IInterfaceBase ReadInterfaceURI1(in IInterfaceBase pinterface, in long type, in string filename, in nsIProperties atts);
+    IInterfaceBase ReadInterfaceXMLFile1(in IInterfaceBase pinterface, in long type, in string filename, in nsIProperties atts);
+    IInterfaceBase ReadInterfaceURI2(in string filename, in nsIProperties atts);
+    IInterfaceBase ReadInterfaceXMLFile2(in string filename, in nsIProperties atts);
+    IInterfaceBase ReadInterfaceData3(in IInterfaceBase pinterface, in long type, in string data, in nsIProperties atts);
+    IInterfaceBase ReadInterfaceXMLData3(in IInterfaceBase pinterface, in long type, in string data, in nsIProperties atts);
+    ITriMesh ReadTrimeshURI(in ITriMesh ptrimesh, in string filename, in nsIProperties atts);
+    ITriMesh ReadTrimeshFile(in ITriMesh ptrimesh, in string filename, in nsIProperties atts);
+    void Add(in IInterfaceBase pinterface, in boolean bAnonymous, in string cmdargs);
+    void GetSensors(out unsigned long count, [array, size_is(count)] out ISensorBase sensors, in unsigned long long timeout);
+	boolean Remove(in IInterfaceBase obj);
+	IKinBody GetKinBody(in string name);
+	ISensorBase GetSensor(in string name);
+	IRobotBase GetRobot(in string name);
+	void GetBodies(out unsigned long count, [array, size_is(count)] out IKinBody bodies, in unsigned long long timeout);
+	void GetRobots(out unsigned long count, [array, size_is(count)] out IRobotBase robots, in unsigned long long timeout);
+	void GetPublishedBodies(out unsigned long count, [array, size_is(count)] out IKinBodyState vbodies, in unsigned long long timeout);
+	void UpdatePublishedBodies(in unsigned long long timeout);
+	IKinBody GetBodyFromEnvironmentId(in long id);
+	void Triangulate(out ITriMesh trimesh, in IKinBody pbody);
+	void TriangulateScene(out ITriMesh trimesh, in long options, in string selectname);
+	long AddModule(in IModuleBase mod, in string cmdargs);
+    void GetModules(out unsigned long count, [array, size_is(count)] out IModuleBase listModules, in unsigned long long timeout);
+	IEnvironmentMutex GetMutex();
+	IViewerBase GetViewer(in string name);
+	void GetViewers(out unsigned long count, [array, size_is(count)] out IViewerBase listViewers);
+	
+	IGraphHandle plot3a([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, in float fPointSize, in IVectorF color, in long drawstyle);
+	IGraphHandle plot3b([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, in float fPointSize, [array, size_is(colorscount)] in float colors, in unsigned long colorscount, in long drawstyle, in boolean bhasalpha);
+	IGraphHandle drawlinestripa([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, in float fwidth, in IVectorF color);
+	IGraphHandle drawlinestripb([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, in float fwidth, [array, size_is(colorscount)] in float colors, in unsigned long colorscount);
+	IGraphHandle drawlinelista([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, in float fwidth, in IVectorF color);
+	IGraphHandle drawlinelistb([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, in float fwidth, [array, size_is(colorscount)] in float colors, in unsigned long colorscount);
+	IGraphHandle drawarrow(in IVectorF p1, in IVectorF p2, in float fwidth, in IVectorF color);
+	IGraphHandle drawbox(in IVectorF vpos, in IVectorF vextents);
+	IGraphHandle drawplane(in ITransformF tplane, in IVectorF vextents, [array, size_is(vtexturecount)] in float vtexture, in unsigned long vtexturecount);
+	IGraphHandle drawtrimesha([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, [array, size_is(indicescount)] in long pIndices, in unsigned long indicescount, in IVectorF color);
+	IGraphHandle drawtrimeshb([array, size_is(numPoints)] in float ppoints, in unsigned long numPoints, in long stride, [array, size_is(indicescount)] in long pIndices, in unsigned long indicescount, [array, size_is(colorscount)] in float colors, in unsigned long colorscount);	
+};

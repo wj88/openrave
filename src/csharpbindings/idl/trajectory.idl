@@ -1,0 +1,45 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/trajectory.h
+
+#include "prototypes.idl"
+#include "interface.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ITrajectoryBase : IInterfaceBase {
+	#TrajectoryBase(EnvironmentBasePtr penv);
+    #~TrajectoryBase();
+	void Init(in IConfigurationSpecification spec);
+	void Insert1(in long index, in unsigned long dataCount, [array, size_is(dataCount)] in float data, in boolean bOverwrite);
+	void Insert2(in long index, in unsigned long dataCount, [array, size_is(dataCount)] in float data, in IConfigurationSpecification spec, in boolean bOverwrite);
+	void Remove(in long startindex, in long endindex);
+	void Sample1(out unsigned long dataCount, [array, size_is(dataCount)] out float data, in float time);
+    void Sample2(out unsigned long dataCount, [array, size_is(dataCount)] out float data, in float time, in IConfigurationSpecification spec);
+    IConfigurationSpecification GetConfigurationSpecification();
+    long GetNumWaypoints();
+    void GetWaypoints1(in long startindex, in long endindex, out unsigned long dataCount, [array, size_is(dataCount)] out float data);
+    void GetWaypoints2(in long startindex, in long endindex, out unsigned long dataCount, [array, size_is(dataCount)] out float data, in IConfigurationSpecification spec);
+    void GetWaypoint1(in long index, out unsigned long dataCount, [array, size_is(dataCount)] out float data);
+    void GetWaypoint2(in long index, out unsigned long dataCount, [array, size_is(dataCount)] out float data, in IConfigurationSpecification spec);
+    float GetDuration();
+    #void serialize(in nsIOutputStream O, in long options);
+    IInterfaceBase deserialize(in nsIInputStream I);
+    #void Clone(in IInterfaceBase preference, in long cloningoptions);
+    void Swap(in ITrajectoryBase traj);
+};

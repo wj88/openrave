@@ -1,0 +1,501 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/kinbody.h
+# The enums GeometryType, KinBodyProperty, CheckLimitsAction, JointType, SaveParameters
+# and AdjacentOptions need defining within the target language.
+
+#include "prototypes.idl"
+#include "openrave.idl"
+#include "interface.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyGeometryInfo : IXMLReadable {
+	#GeometryInfo();
+    #~GeometryInfo();
+    boolean InitCollisionMesh(in float fTessellation);
+	float GetSphereRadius();
+	float GetCylinderRadius();
+	float GetCylinderHeight();
+	IVectorF GetBoxExtents();
+	
+	attribute ITransformF _t;
+	attribute IVectorF _vGeomData;
+	attribute IVectorF _vDiffuseColor;
+	attribute IVectorF _vAmbientColor;
+	attribute ITriMesh _meshcollision;
+	attribute long _type;
+	attribute string _filenamerender;
+	attribute string _filenamecollision;
+	attribute IVectorF _vRenderScale;
+	attribute IVectorF _vCollisionScale;
+	attribute float _fTransparency;
+	attribute boolean _bVisible;
+	attribute boolean _bModifiable;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyLinkInfoExtraGeometryKVP : nsISupports {
+	attribute string key;
+	void GetValue(out unsigned long count, [array, size_is(count)] out IKinBodyGeometryInfo geometryinfo);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyLinkInfo : IXMLReadable {
+	#LinkInfo();
+    #~LinkInfo();
+	void GetGeometryInfo(out unsigned long count, [array, size_is(count)] out IKinBodyGeometryInfo geometryinfo);
+	void GetExtraGeometries(out unsigned long count, [array, size_is(count)] out IKinBodyLinkInfoExtraGeometryKVP extrageometries);
+	attribute string _name;
+	attribute ITransformF _t;
+	attribute ITransformF _tMassFrame;
+	attribute float _mass;
+	attribute IVectorF _vinertiamoments;
+	
+	# We'll return the following as a propertybag which stores values as an nsIVariant which can be a primitive type or
+	# an array. There will be some casting required to sort this out each end.
+	# Ref: 	https://developer.mozilla.org/en-US/docs/XPCOM_Interface_Reference/nsIProperties
+	# 		https://developer.mozilla.org/en-US/docs/XPCOM_Interface_Reference/NsIVariant
+	#
+	# This will need reviewing later to make sure it behaves as expected.
+	attribute nsIProperties _mapFloatParameters;
+	attribute nsIProperties _mapIntParameters;
+	attribute nsIProperties _mapStringParameters;
+	
+	void GetForcedAdjacentLinks(out unsigned long count, [array, size_is(count)] out string _vForcedAdjacentLinks);
+	void SetForcedAdjacentLinks(in unsigned long count, [array, size_is(count)] in string _vForcedAdjacentLinks);
+	attribute boolean _bStatic;
+	attribute boolean _bIsEnabled;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyLinkGeometry : nsISupports {
+	#Geometry(IKinBodyLink parent, IKinBodyGeometryInfo info);
+    #virtual ~Geometry();
+	
+	ITransformF GetTransform();
+	long GetType();
+	IVectorF GetRenderScale();
+	string GetRenderFilename();
+	float GetTransparency();
+	boolean IsVisible();
+	boolean IsModifiable();
+	float GetSphereRadius();
+	float GetCylinderRadius();
+	float GetCylinderHeight();
+	IVectorF GetBoxExtents();
+	IVectorF GetDiffuseColor();
+	IVectorF GetAmbientColor();
+	ITriMesh GetCollisionMesh();
+	IKinBodyGeometryInfo GetInfo();
+	IAABBF ComputeAABB(in ITransformF trans);
+	void serialize(in nsIOutputStream o, in long options);
+	void SetCollisionMesh(in ITriMesh mesh);
+	boolean SetVisible(in boolean visible);
+	void SetTransparency(in float f);
+	void SetDiffuseColor(in IVectorF color);
+	void SetAmbientColor(in IVectorF color);
+	boolean ValidateContactNormal(in IVectorF position, in IVectorF normal);
+	void SetRenderFilename(in string renderfilename);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyLink : nsISupports {
+	#Link(IKinBody parent);
+    #~Link();
+	string GetName();
+	boolean IsStatic();
+	void Enable(in boolean enable);
+	boolean IsEnabled();
+	boolean SetVisible(in boolean visible);
+	boolean IsVisible();
+	IKinBody GetParent();
+	long GetIndex();
+	ITriMesh GetCollisionData();
+	IAABBF ComputeLocalAABB();
+	IAABBF ComputeAABB();
+	ITransformF GetTransform();
+	void GetParentLinks(out unsigned long count, [array, size_is(count)] out IKinBodyLink vParentLinks);
+	boolean IsParentLink(in IKinBodyLink plink);
+	IVectorF GetLocalCOM();
+	IVectorF GetGlobalCOM();
+	IVectorF GetCOMOffset();
+	ITransformMatrixF GetLocalInertia();
+	ITransformMatrixF GetGlobalInertia();
+	void SetLocalMassFrame(in ITransformF massframe);
+	void SetPrincipalMomentsOfInertia(in IVectorF inertiamoments);
+	void SetMass(in float mass);
+	ITransformF GetLocalMassFrame();
+	ITransformF GetGlobalMassFrame();
+	IVectorF GetPrincipalMomentsOfInertia();
+	float GetMass();
+	void SetStatic(in boolean bStatic);
+	void SetTransform(in ITransformF transform);
+	void SetForce(in IVectorF force, in IVectorF pos, in boolean add);
+	void SetTorque(in IVectorF torque, in boolean add);
+	void SetVelocity(in IVectorF linearvel, in IVectorF angularvel);
+	void GetVelocity(out IVectorF linearvel, out IVectorF angularvel);
+	# The previous version is enough.
+	#std::pair<Vector,Vector> GetVelocity()
+	void GetGeometries(out unsigned long count, [array, size_is(count)] out IKinBodyLinkGeometry geometries);
+	IKinBodyLinkGeometry GetGeometry(in long index);
+	void InitGeometries(in unsigned long count, [array, size_is(count)] in IKinBodyLinkGeometry geometries);
+	void SetGeometriesFromGroup(in string name);
+	void GetGeometriesFromGroup(in string name, out unsigned long count, [array, size_is(count)] out IKinBodyLinkGeometry geometries);
+	void SetGroupGeometries(in string name, in unsigned long count, [array, size_is(count)] in IKinBodyLinkGeometry geometries);
+	long GetGroupNumGeometries(in string name);
+	void SwapGeometries(in IKinBodyLink link);
+	boolean ValidateContactNormal(in IVectorF position, in IVectorF normal);
+	boolean IsRigidlyAttached(in IKinBodyLink plink);
+	void GetRigidlyAttachedLinks(out unsigned long count, [array, size_is(count)] out IKinBodyLink vattachedlinks);
+	void serialize(in nsIOutputStream o, in long options);
+	void GetFloatParameters(out nsIProperties params);
+	void SetFloatParameters(in string key, in unsigned long count, [array, size_is(count)] in float parameters);
+	void GetIntParameters(out nsIProperties params);
+	void SetIntParameters(in string key, in unsigned long count, [array, size_is(count)] in long parameters);	
+	void GetStringParameters(out nsIProperties params);
+	void SetStringParameters(in string key, in unsigned long count, [array, size_is(count)] in string parameters);
+	void UpdateInfo();
+	IKinBodyLinkInfo GetInfo();
+	IKinBodyLinkInfo UpdateAndGetInfo();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyMimicInfo : nsISupports {
+	attribute string _equationsPosition;
+	attribute string _equationsVelocity;
+	attribute string _equationsAcceleration;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyMimicDOFFormat : nsISupports {
+	attribute short jointindex;
+	attribute short dofindex;
+	attribute octet axis;
+	IKinBodyJoint GetJoint(in IKinBody parent);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyMimicDOFHierarchy : nsISupports {
+	attribute short dofindex;
+    attribute unsigned short dofformatindex;		
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyMimic : nsISupports {
+	attribute string _equationsPosition;
+	attribute string _equationsVelocity;
+	attribute string _equationsAcceleration;
+
+	void GetDOFFormat(out unsigned long count, [array, size_is(count)] out IKinBodyMimicDOFFormat _vdofformat);
+	void SetDOFFormat(in unsigned long count, [array, size_is(count)] in IKinBodyMimicDOFFormat _vdofformat);	
+	void GetMimicDOFs(out unsigned long count, [array, size_is(count)] out IKinBodyMimicDOFHierarchy _vmimicdofs);
+	void SetMimicDOFs(in unsigned long count, [array, size_is(count)] in IKinBodyMimicDOFHierarchy _vmimicdofs);	
+
+	# TODO: When I come across the definition for OpenRAVEFunctionParserReal , update this.
+    #OpenRAVEFunctionParserRealPtr _posfn;
+	#void GetVelocityFunctions(out unsigned long count, [array, size_is(count)] out OpenRAVEFunctionParserRealPtr _velfns);
+	#void SetVelocityFunctions(in unsigned long count, [array, size_is(count)] in OpenRAVEFunctionParserRealPtr _velfns);
+	#void GetAccelerationFunctions(out unsigned long count, [array, size_is(count)] out OpenRAVEFunctionParserRealPtr _accelfns);
+	#void SetAccelerationFunctions(in unsigned long count, [array, size_is(count)] in OpenRAVEFunctionParserRealPtr _accelfns);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyJointInfo : IXMLReadable {
+	#JointInfo();
+    #~JointInfo();
+	
+	attribute long _type;
+    attribute string _name;
+    attribute string _linkname0;
+	attribute string _linkname1;
+    attribute IVectorF _vanchor;
+	
+	attribute IVectorF _vaxes0;
+	attribute IVectorF _vaxes1;
+	attribute IVectorF _vaxes2;
+
+	void GetCurrentValues(out unsigned long count, [array, size_is(count)] out float _vcurrentvalues);
+	void SetCurrentValues(in unsigned long count, [array, size_is(count)] in float _vcurrentvalues);
+
+	attribute float _vresolution0;
+	attribute float _vresolution1;
+	attribute float _vresolution2;
+	attribute float _vmaxvel0;
+	attribute float _vmaxvel1;
+	attribute float _vmaxvel2;
+	attribute float _vhardmaxvel0;
+	attribute float _vhardmaxvel1;
+	attribute float _vhardmaxvel2;
+	attribute float _vmaxaccel0;
+	attribute float _vmaxaccel1;
+	attribute float _vmaxaccel2;
+	attribute float _vmaxtorque0;
+	attribute float _vmaxtorque1;
+	attribute float _vmaxtorque2;
+	attribute float _vweights0;
+	attribute float _vweights1;
+	attribute float _vweights2;
+	attribute float _voffsets0;
+	attribute float _voffsets1;
+	attribute float _voffsets2;
+	attribute float _vlowerlimit0;
+	attribute float _vlowerlimit1;
+	attribute float _vlowerlimit2;
+	attribute float _vupperlimit0;
+	attribute float _vupperlimit1;
+	attribute float _vupperlimit2;
+	attribute ITrajectoryBase _trajfollow;
+	attribute IKinBodyMimicInfo _vmimic0;
+	attribute IKinBodyMimicInfo _vmimic1;
+	attribute IKinBodyMimicInfo _vmimic2;
+	
+	attribute nsIProperties _mapFloatParameters;
+    attribute nsIProperties _mapIntParameters;
+    attribute nsIProperties _mapStringParameters;
+	
+	attribute octet _bIsCircular0;
+	attribute octet _bIsCircular1;
+	attribute octet _bIsCircular2;
+	attribute boolean _bIsActive;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyJoint : nsISupports {
+	#Joint(IKinBody parent, long type);
+    #virtual ~Joint();
+	string GetName();
+	float GetMaxVel(in long iaxis);
+	float GetMaxAccel(in long iaxis);
+	float GetMaxTorque(in long iaxis);
+	long GetDOFIndex();
+	long GetJointIndex();
+	IKinBody GetParent();
+	IKinBodyLink GetFirstAttached();
+	IKinBodyLink GetSecondAttached();
+	long GetType();
+	void GetResolutions(inout unsigned long count, [array, size_is(count)] inout float resolutions, in boolean bAppend);
+	float GetResolution(in long iaxi0);
+	void SetResolution(in float resolution, in long iaxis);
+	long GetDOF();
+	boolean IsCircular(in long iaxis);
+	boolean IsRevolute(in long iaxis);
+	boolean IsPrismatic(in long iaxis);
+	boolean IsStatic();
+	void GetValues(inout unsigned long count, [array, size_is(count)] inout float values, in boolean bAppend);
+	float GetValue(in long axis);
+	void GetVelocities(inout unsigned long count, [array, size_is(count)] inout float values, in boolean bAppend);
+	float GetVelocity(in long axis);
+	void AddTorque(in unsigned long count, [array, size_is(count)] in float torques);
+	IVectorF GetAnchor();
+	IVectorF GetAxis(in long axis);
+	void GetLimits(inout unsigned long lowerCount, [array, size_is(lowerCount)] inout float lowerLimit, inout unsigned long upperCount, [array, size_is(upperCount)] inout float upperLimit, in boolean bAppend);
+	void GetLimit(in long iaxis, out float upperLimit, out float lowerLimit);
+	void SetLimits(in unsigned long lowerCount, [array, size_is(lowerCount)] in float lowerLimit, in unsigned long upperCount, [array, size_is(upperCount)] in float upperLimit);
+	void GetVelocityLimits1(inout unsigned long maxCount, [array, size_is(maxCount)] inout float max, in boolean bAppend);
+	void GetVelocityLimits2(inout unsigned long lowerCount, [array, size_is(lowerCount)] inout float lowerLimit, inout unsigned long upperCount, [array, size_is(upperCount)] inout float upperLimit, in boolean bAppend);
+	void GetVelocityLimit(in long iaxis, out float lower, out float upper);
+	void SetVelocityLimits3(in unsigned long maxCount, [array, size_is(maxCount)] in float max);
+	void GetAccelerationLimits(inout unsigned long maxCount, [array, size_is(maxCount)] inout float max, in boolean bAppend);
+	float GetAccelerationLimit(in long iaxis);
+	void SetAccelerationLimits(in unsigned long maxCount, [array, size_is(maxCount)] in float max);
+	void GetTorqueLimits(inout unsigned long maxCount, [array, size_is(maxCount)] inout float max, in boolean bAppend);
+	void SetTorqueLimits(in unsigned long maxCount, [array, size_is(maxCount)] in float max);
+	void GetWeights(inout unsigned long weightsCount, [array, size_is(weightsCount)] inout float weights, in boolean bAppend);
+	float GetWeight(in long axis);
+	void SetWeights(in unsigned long weightsCount, [array, size_is(weightsCount)] in float weights);
+	void SubtractValues(inout unsigned long values1Count, [array, size_is(values1Count)] inout float values1, in unsigned long values2Count, [array, size_is(values2Count)] in float values2);
+	float SubtractValue(in float value1, in float value2, in long iaxis);
+	float GetWrapOffset(in long iaxis);
+	void SetWrapOffset(in float offset, in long iaxis);
+	void serialize(in nsIOutputStream o, in long options);
+	IKinBodyLink GetHierarchyParentLink();
+	IKinBodyLink GetHierarchyChildLink();
+	IVectorF GetInternalHierarchyAxis(in long axis);
+	ITransformF GetInternalHierarchyLeftTransform();
+	ITransformF GetInternalHierarchyRightTransform();
+	boolean IsMimic(in long axis);
+	string GetMimicEquation(in long axis, in long type, in string format);
+	void GetMimicDOFIndices(out unsigned long count, [array, size_is(count)] out long mimicdofs, in long axis);
+	void SetMimicEquations(in long axis, in string poseq, in string veleq, in string acceleq);
+	nsIProperties GetFloatParameters();
+	void SetFloatParameters(in string key, in unsigned long count, [array, size_is(count)] in float parameters);
+	nsIProperties GetIntParameters();
+	void SetIntParameters(in string key, in unsigned long count, [array, size_is(count)] in long parameters);
+	nsIProperties GetStringParameters();
+	void SetStringParameters(in string key, in unsigned long count, [array, size_is(count)] in string parameters);
+	void UpdateInfo();
+	IKinBodyJointInfo GetInfo();
+	IKinBodyJointInfo UpdateAndGetInfo();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyState : nsISupports {
+	#BodyState();
+	#~BodyState();
+	attribute IKinBody pbody;
+	void GetTransforms(out unsigned long count, [array, size_is(count)] out ITransformF vectrans);
+	void SetTransforms(in unsigned long count, [array, size_is(count)] in ITransformF vectrans);
+	void GetJointValues(out unsigned long count, [array, size_is(count)] out float values);
+	void SetJointValues(in unsigned long count, [array, size_is(count)] in float values);
+	attribute string strname;
+    attribute long environmentid;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyManageData : nsISupports {
+	#ManageData(SensorSystemBasePtr psensorsystem);
+    #~ManageData();
+	ISensorSystemBase GetSystem();
+	IXMLReadable GetData();
+	IKinBodyLink GetOffsetLink();
+	boolean IsPresent();
+	boolean IsEnabled();
+	boolean IsLocked();
+	boolean Lock(in boolean bDoLock);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBodyStateSaver : nsISupports {
+	#KinBodyStateSaver(in IKinBody pbody, in long options);
+    #~KinBodyStateSaver();
+    IKinBody GetBody();
+	void Restore(in IKinBody body);
+	# Renamed to resolve conflict with XPCOM's release.
+	void ReleaseBody();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IKinBody : IInterfaceBase {
+	long GetInterfaceTypeStatic();
+	void Destroy();
+	boolean InitFromBoxes1(in unsigned long count, [array, size_is(count)] in IAABBF boxes, in boolean visible);
+	boolean InitFromBoxes2(in unsigned long count, [array, size_is(count)] in IOBBF boxes, in boolean visible);
+	boolean InitFromSpheres(in unsigned long count, [array, size_is(count)] in IVectorF spheres, in boolean visible);
+	boolean InitFromTrimesh(in ITriMesh trimesh, in boolean visible);
+	boolean InitFromGeometries(in unsigned long count, [array, size_is(count)] in IKinBodyGeometryInfo geometries);
+	void SetLinkGeometriesFromGroup(in string name);
+	boolean Init(in unsigned long linkinfosCount, [array, size_is(linkinfosCount)] in IKinBodyLinkInfo linkinfos, in unsigned long jointinfosCount, [array, size_is(jointinfosCount)] in IKinBodyJointInfo jointinfos);
+	string GetName();
+	void SetName(in string name);
+	long GetDOF();
+	void GetDOFValues(out unsigned long vCount, [array, size_is(vCount)] out float v, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void GetDOFVelocities(out unsigned long vCount, [array, size_is(vCount)] out float v, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void GetDOFLimits(out unsigned long lowerLimitCount, [array, size_is(lowerLimitCount)] out float lowerLimit, out unsigned long upperLimitCount, [array, size_is(upperLimitCount)] out float upperLimit, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void GetDOFVelocityLimits1(out unsigned long lowerLimitCount, [array, size_is(lowerLimitCount)] out float lowerLimit, in unsigned long upperLimitCount, [array, size_is(upperLimitCount)] in float upperLimit, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void GetDOFVelocityLimits2(out unsigned long maxvelocitiesCount, [array, size_is(maxvelocitiesCount)] out float maxvelocities, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void GetDOFAccelerationLimits(out unsigned long maxaccelerationsCount, [array, size_is(maxaccelerationsCount)] out float maxaccelerations, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void GetDOFTorqueLimits(out unsigned long maxaccelerationsCount, [array, size_is(maxaccelerationsCount)] out float maxaccelerations);
+	void GetDOFMaxTorque(out unsigned long vCount, [array, size_is(vCount)] out float v);
+	void GetDOFResolutions(out unsigned long vCount, [array, size_is(vCount)] out float v, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void GetDOFWeights(out unsigned long vCount, [array, size_is(vCount)] out float v, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void SetDOFVelocityLimits(in unsigned long maxlimitsCount, [array, size_is(maxlimitsCount)] in float maxlimits);
+	void SetDOFAccelerationLimits(in unsigned long maxlimitsCount, [array, size_is(maxlimitsCount)] in float maxlimits);
+	void SetDOFTorqueLimits(in unsigned long maxlimitsCount, [array, size_is(maxlimitsCount)] in float maxlimits);
+	void SetDOFWeights(in unsigned long weightsCount, [array, size_is(weightsCount)] in float weights, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void SetDOFLimits(in unsigned long lowerLimitCount, [array, size_is(lowerLimitCount)] in float lowerLimit, in unsigned long upperLimitCount, [array, size_is(upperLimitCount)] in float upperLimit);
+	void GetJoints(in unsigned long count, [array, size_is(count)] in IKinBodyJoint joints);
+	void GetPassiveJoints(in unsigned long count, [array, size_is(count)] in IKinBodyJoint joints);
+	void GetDependencyOrderedJoints(in unsigned long count, [array, size_is(count)] in IKinBodyJoint joints);
+	# Hmmm.... I'll have to come back to this one.
+	#std::vector< std::vector< std::pair<LinkPtr, JointPtr> > >& GetClosedLoops();
+	boolean GetChain1(in long linkindex1, in long linkindex2, out unsigned long jointCount, [array, size_is(jointCount)] out IKinBodyJoint joints);
+	boolean GetChain2(in long linkindex1, in long linkindex2, out unsigned long linkCount, [array, size_is(linkCount)] out IKinBodyLink links);
+	boolean IsDOFInChain(in long linkindex1, in long linkindex2, in long dofindex);
+	long GetJointIndex(in string name);
+	IKinBodyJoint GetJoint(in string name);
+	IKinBodyJoint GetJointFromDOFIndex(in long dofindex);
+	void SubtractDOFValues(inout unsigned long values1Count, [array, size_is(values1Count)] inout float values1, in unsigned long values2Count, [array, size_is(values2Count)] in float values2, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void SetDOFTorques(inout unsigned long torquesCount, [array, size_is(torquesCount)] inout float torques, in boolean add);
+	void GetLinks(out unsigned long linkCount, [array, size_is(linkCount)] out IKinBodyLink links);
+	boolean IsDOFRevolute(in long dofindex);
+	boolean IsDOFPrismatic(in long dofindex);
+	IKinBodyLink GetLink(in string name);
+	void SimulationStep(in float fElapsedTime);
+	void GetLinkTransformations1(out unsigned long transformsCount, [array, size_is(transformsCount)] out ITransformF transforms);
+	void GetLinkTransformations2(out unsigned long transformsCount, [array, size_is(transformsCount)] out ITransformF transforms, in unsigned long dofbranchesCount, [array, size_is(dofbranchesCount)] in long dofbranches);
+	void GetLinkEnableStates(out unsigned long enableStatesCount, [array, size_is(enableStatesCount)] out octet enablestates);
+	ITransformF GetTransform();
+	boolean SetVelocity(in IVectorF linearvel, in IVectorF angularvel);
+	void SetDOFVelocities1(in unsigned long dofvelocitiesCount, [array, size_is(dofvelocitiesCount)] in long dofvelocities, in IVectorF linearvel, in IVectorF angularvel, in unsigned long checklimits);
+	void SetDOFVelocities2(in unsigned long dofvelocitiesCount, [array, size_is(dofvelocitiesCount)] in long dofvelocities, in unsigned long checklimits, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	# Hmmm.... I'll have to come back to these (line 1570).
+	#void GetLinkVelocities(std::vector<std::pair<Vector,Vector> >& velocities);
+	#typedef std::map<int, std::pair<Vector,Vector> > AccelerationMap;
+	#IAccelerationMap AccelerationMap;
+	#void GetLinkAccelerations(const std::vector<dReal>& dofaccelerations, std::vector<std::pair<Vector,Vector> >& linkaccelerations, AccelerationMapConstPtr externalaccelerations=AccelerationMapConstPtr()) const;
+	void SetTransform(in ITransformF transform);
+	IAABBF ComputeAABB();
+	IVectorF GetCenterOfMass();
+	void Enable(in boolean enable);
+	boolean IsEnabled();
+	boolean SetVisible(in boolean visible);
+	boolean IsVisible();
+	void SetDOFValues1(in unsigned long valuesCount, [array, size_is(valuesCount)] in float values, in unsigned long checklimits, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void SetJointValues1(in unsigned long valuesCount, [array, size_is(valuesCount)] in float values, in boolean checklimits);
+	void SetDOFValues2(in unsigned long valuesCount, [array, size_is(valuesCount)] in float values, in ITransformF transform, in unsigned long checklimits);
+	void SetJointValues2(in unsigned long valuesCount, [array, size_is(valuesCount)] in float values, in ITransformF transform, in boolean checklimits);
+	void SetLinkTransformations1(in unsigned long transformsCount, [array, size_is(transformsCount)] in ITransformF transforms);
+	void SetLinkTransformations2(in unsigned long transformsCount, [array, size_is(transformsCount)] in ITransformF transforms, in unsigned long dofbranchesCount, [array, size_is(dofbranchesCount)] in long dofbranches);
+	# Hmmm.... I'll have to come back to these (line 1658).	
+	#void SetLinkVelocities(const std::vector<std::pair<Vector,Vector> >& velocities);
+	void SetLinkEnableStates(in unsigned long count, [array, size_is(count)] in octet enablestates);
+	void ComputeJacobianTranslation(in long linkindex, in IVectorF position, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void CalculateJacobian(in long linkindex, in IVectorF position, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian);
+	# Ignored as we have a viable option above (line 1679).
+	#void CalculateJacobian(int linkindex, const Vector& position, boost::multi_array<dReal,2>& jacobian);
+	void CalculateRotationJacobian(in long linkindex, in IVectorF quat, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian);
+	# Ignored as we have a viable option above (line 1689).
+	#void CalculateRotationJacobian(int linkindex, const Vector& quat, boost::multi_array<dReal,2>& jacobian);
+	void ComputeJacobianAxisAngle(in long linkindex, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void CalculateAngularVelocityJacobian(in long linkindex, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian);
+	# Ignored as we have a viable option above (line 1703).
+	#void CalculateAngularVelocityJacobian(int linkindex, boost::multi_array<dReal,2>& jacobian)
+	void ComputeHessianTranslation(in long linkindex, in IVectorF position, out unsigned long hessianCount, [array, size_is(hessianCount)] out float hessian, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);
+	void ComputeHessianAxisAngle(in long linkindex, out unsigned long hessianCount, [array, size_is(hessianCount)] out float hessian, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices);	
+	# Hmmm.... I'll have to come back to these (line 1764).	
+	#typedef std::map<int, std::pair<Vector,Vector> > ForceTorqueMap;
+	#void ComputeInverseDynamics(std::vector<dReal>& doftorques, const std::vector<dReal>& dofaccelerations, const ForceTorqueMap& externalforcetorque=ForceTorqueMap()) const;
+	#void ComputeInverseDynamics(boost::array< std::vector<dReal>, 3>& doftorquecomponents, const std::vector<dReal>& dofaccelerations, const ForceTorqueMap& externalforcetorque=ForceTorqueMap()) const;
+	void SetSelfCollisionChecker(in ICollisionCheckerBase collisionchecker);
+	ICollisionCheckerBase GetSelfCollisionChecker();
+	boolean CheckSelfCollision(out ICollisionReport report, in ICollisionCheckerBase collisionchecker);
+	boolean IsAttached(in IKinBody body);
+	void GetAttached(out unsigned long setAttachedCount, [array, size_is(setAttachedCount)] out IKinBody setAttached);
+	boolean IsRobot();
+	long GetEnvironmentId();
+	# Cannot return a signed 8 bit integer so using a short instead.
+	short DoesAffect(in long jointindex, in long linkindex);
+	short DoesDOFAffectLink(in long dofindex, in long linkindex);	
+	void GetNonAdjacentLinks(out unsigned long count, [array, size_is(count)] out long links, in long adjacentoptions);
+	void GetAdjacentLinks(out unsigned long count, [array, size_is(count)] out long links);
+	IKinBodyManageData GetManageData();
+	long GetUpdateStamp();
+	#void Clone(in IInterfaceBase preference, in long cloningoptions);
+	IUserData RegisterChangeCallback(in long properties, in ICallback callback);
+	#void Serialize(IBaseXMLWriter writer, in long options);
+	string GetKinematicsGeometryHash();
+	void SetZeroConfiguration();
+	void SetNonCollidingConfiguration();
+	IConfigurationSpecification GetConfigurationSpecification(in string interpolation);
+	IConfigurationSpecification GetConfigurationSpecificationIndices(in unsigned long indicesCount, [array, size_is(indicesCount)] in long indices, in string interpolation);
+	# Hmmm.... I'll have to come back to these (line 1927).	
+	#void SetConfigurationValues(std::vector<dReal>::const_iterator itvalues, uint32_t checklimits = CLA_CheckLimits);
+	void GetConfigurationValues(out unsigned long vCount, [array, size_is(vCount)] out float v);
+	#void serialize(in nsIOutputStream o, in long options);
+};

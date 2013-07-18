@@ -1,0 +1,140 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/planner.h
+# The enums ConstraintFilterOptions, PlannerStatus, PlannerAction
+# need defining within the target language.
+
+#include "prototypes.idl"
+#include "openrave.idl"
+#include "interface.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackPlan : nsISupports {
+	long Invoke(in IPlannerProgress progress);
+};
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackProcessF1 : nsISupports {
+	float Invoke(in unsigned long count, [array, size_is(count)] in float v);
+};
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackProcessF2 : nsISupports {
+	float Invoke(in unsigned long count1, [array, size_is(count1)] in float v1, in unsigned long count2, [array, size_is(count2)] in float v2);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IConstraintFilterReturn : nsISupports {
+	#ConstraintFilterReturn() : _fTimeWhenInvalid(0), _returncode(0)
+	void Clear();
+	
+	void GetConfigurations(out unsigned long count, [array, size_is(count)] out float v);
+	void SetConfigurations(in unsigned long count, [array, size_is(count)] in float v);
+	void GetConfigurationTimes(out unsigned long count, [array, size_is(count)] out float v);
+	void SetConfigurationTimes(in unsigned long count, [array, size_is(count)] in float v);
+
+	void GetInvalidValues(out unsigned long count, [array, size_is(count)] out float v);
+	void SetInvalidValues(in unsigned long count, [array, size_is(count)] in float v);
+	void GetInvalidVelocities(out unsigned long count, [array, size_is(count)] out float v);
+	void SetInvalidVelocities(in unsigned long count, [array, size_is(count)] in float v);
+	
+    attribute float _fTimeWhenInvalid;
+    attribute long _returncode;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IPlannerBaseParametersStateSaver {
+	#StateSaver(boost::shared_ptr<PlannerParameters> params);
+    #~StateSaver();
+    IPlannerBaseParameters GetParameters();
+	void Restore();
+};
+
+# There is a problem here, in that XPIDL doesn't permit multiple inheritance. Logically, I
+# cannot see the problem with it, but hey.
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+#interface IPlannerBaseParameters : IBaseXMLReader, IXMLReadable {
+interface IPlannerBaseParameters : IBaseXMLReader {
+	#PlannerParameters();
+    #virtual ~PlannerParameters();
+	void copy(in IPlannerBaseParameters r);
+	void SetRobotActiveJoints(in IRobotBase robot);
+	void SetConfigurationSpecification(in IEnvironmentBase env, in IConfigurationSpecification spec);
+	void Validate();
+	attribute IConfigurationSpecification _configurationspecification;
+	
+	# For now, we'll leave out the callback functions as they're all marked as optional anyway (line 184).
+	#attribute ICallbackProcessF1 _costfn;
+	#attribute ICallbackProcessF1 _goalfn;
+	#attribute ICallbackProcessF2 _distmetricfn;
+	#CheckPathVelocityConstraintFn _checkpathvelocityconstraintsfn;
+	# This one is mandatory (to whom... I don't think the consumer has to use it, more than likely it is
+	# an inheriting class (line 248).
+	#SampleFn _samplefn;
+	#SampleGoalFn _samplegoalfn;
+	#SampleInitialFn _sampleinitialfn;
+	#SampleNeighFn _sampleneighfn;
+	#SetStateFn _setstatefn;
+	#GetStateFn _getstatefn;
+	#DiffStateFn _diffstatefn;
+	#NeighStateFn _neighstatefn;
+	
+	long CheckPathAllConstraints(in unsigned long q0count, [array, size_is(q0count)] in float q0, in unsigned long q1count, [array, size_is(q1count)] in float q1, in unsigned long dq0count, [array, size_is(dq0count)] in float dq0, in unsigned long dq1count, [array, size_is(dq1count)] in float dq1, in float elapsedtime, in long interval, in long options, out IConstraintFilterReturn filterreturn);
+
+	void GetInitialConfig(out unsigned long count, [array, size_is(count)] out float v);
+	void SetInitialConfig(in unsigned long count, [array, size_is(count)] in float v);
+	void GetGoalConfig(out unsigned long count, [array, size_is(count)] out float v);
+	void SetGoalConfig(in unsigned long count, [array, size_is(count)] in float v);
+	void GetConfigLowerLimit(out unsigned long count, [array, size_is(count)] out float v);
+	void SetConfigLowerLimit(in unsigned long count, [array, size_is(count)] in float v);
+	void GetConfigUpperLimit(out unsigned long count, [array, size_is(count)] out float v);
+	void SetConfigUpperLimit(in unsigned long count, [array, size_is(count)] in float v);
+	void GetConfigVelocityLimit(out unsigned long count, [array, size_is(count)] out float v);
+	void SetConfigVelocityLimit(in unsigned long count, [array, size_is(count)] in float v);
+	void GetConfigAccelerationLimit(out unsigned long count, [array, size_is(count)] out float v);
+	void SetConfigAccelerationLimit(in unsigned long count, [array, size_is(count)] in float v);
+	void GetConfigResolution(out unsigned long count, [array, size_is(count)] out float v);
+	void SetConfigResolution(in unsigned long count, [array, size_is(count)] in float v);
+	attribute float _fStepLength;
+	attribute long _nMaxIterations;
+	attribute string _sPostProcessingPlanner;
+	attribute string _sPostProcessingParameters;
+	attribute string _sExtraParameters;
+	attribute unsigned long _nRandomGeneratorSeed;
+	long GetDOF();
+	void GetInternalSamplers(out unsigned long count, [array, size_is(count)] out ISpaceSamplerBase v);
+	void SetInternalSamplers(in unsigned long count, [array, size_is(count)] in ISpaceSamplerBase v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IPlannerProgress : nsISupports {
+	#PlannerProgress();
+    attribute long _iteration;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IPlannerBase : IInterfaceBase {
+	#PlannerBase(EnvironmentBasePtr penv);
+    #~PlannerBase();
+    boolean InitPlan1(in IRobotBase robot, in IPlannerBaseParameters params);
+	boolean InitPlan2(in IRobotBase robot, in nsIInputStream isParameters);
+	long PlanPath(in ITrajectoryBase traj);
+	IPlannerBaseParameters GetParameters();
+	IUserData RegisterPlanCallback(in ICallbackPlan callbackfn);
+};

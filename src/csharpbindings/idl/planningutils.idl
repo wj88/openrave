@@ -1,0 +1,121 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/planningutils.h
+
+#include "prototypes.idl"
+
+# Most of the following functions could be PInvoke'd but they would still have to belong to a class.
+#OPENRAVE_API int JitterActiveDOF(RobotBasePtr robot,int nMaxIterations=5000,dReal fRand=0.03,const PlannerBase::PlannerParameters::NeighStateFn& neighstatefn = PlannerBase::PlannerParameters::NeighStateFn());
+#OPENRAVE_API bool JitterTransform(KinBodyPtr pbody, float fJitter, int nMaxIterations=1000);
+#OPENRAVE_API int JitterCurrentConfiguration(PlannerBase::PlannerParametersConstPtr parameters, int maxiterations=5000, dReal maxjitter=0.015, dReal perturbation=1e-5);
+#OPENRAVE_API void VerifyTrajectory(PlannerBase::PlannerParametersConstPtr parameters, TrajectoryBaseConstPtr trajectory, dReal samplingstep=0.002);
+#OPENRAVE_API void ExtendWaypoint(int index, const std::vector<dReal>& dofvalues, const std::vector<dReal>& dofvelocities, TrajectoryBasePtr traj, PlannerBasePtr planner);
+#OPENRAVE_API void ExtendActiveDOFWaypoint(int index, const std::vector<dReal>& dofvalues, const std::vector<dReal>& dofvelocities, TrajectoryBasePtr traj, RobotBasePtr robot, dReal fmaxvelmult=1, dReal fmaxaccelmult=1, const std::string& plannername="");
+#OPENRAVE_API PlannerStatus SmoothActiveDOFTrajectory(TrajectoryBasePtr traj, RobotBasePtr robot, dReal fmaxvelmult=1, dReal fmaxaccelmult=1, const std::string& plannername="", const std::string& plannerparameters="");
+#OPENRAVE_API PlannerStatus SmoothAffineTrajectory(TrajectoryBasePtr traj, const std::vector<dReal>& maxvelocities, const std::vector<dReal>&maxaccelerations, const std::string& plannername="", const std::string& plannerparameters="");
+#OPENRAVE_API PlannerStatus SmoothTrajectory(TrajectoryBasePtr traj, dReal fmaxvelmult=1, dReal fmaxaccelmult=1, const std::string& plannername="", const std::string& plannerparameters="");
+#OPENRAVE_API PlannerStatus RetimeActiveDOFTrajectory(TrajectoryBasePtr traj, RobotBasePtr robot, bool hastimestamps=false, dReal fmaxvelmult=1, dReal fmaxaccelmult=1, const std::string& plannername="", const std::string& plannerparameters="");
+#OPENRAVE_API PlannerStatus RetimeAffineTrajectory(TrajectoryBasePtr traj, const std::vector<dReal>&maxvelocities, const std::vector<dReal>&maxaccelerations, bool hastimestamps=false, const std::string& plannername="", const std::string& plannerparameters="");
+#OPENRAVE_API PlannerStatus RetimeTrajectory(TrajectoryBasePtr traj, bool hastimestamps=false, dReal fmaxvelmult=1, dReal fmaxaccelmult=1, const std::string& plannername="", const std::string& plannerparameters="");
+#OPENRAVE_API void InsertActiveDOFWaypointWithRetiming(int index, const std::vector<dReal>& dofvalues, const std::vector<dReal>& dofvelocities, TrajectoryBasePtr traj, RobotBasePtr robot, dReal fmaxvelmult=1, dReal fmaxaccelmult=1, const std::string& plannername="");
+#OPENRAVE_API void InsertWaypointWithRetiming(int index, const std::vector<dReal>& dofvalues, const std::vector<dReal>& dofvelocities, TrajectoryBasePtr traj, PlannerBasePtr planner);
+#OPENRAVE_API void InsertWaypointWithSmoothing(int index, const std::vector<dReal>& dofvalues, const std::vector<dReal>& dofvelocities, TrajectoryBasePtr traj, dReal fmaxvelmult=1, dReal fmaxaccelmult=1, const std::string& plannername="");
+#OPENRAVE_API void InsertWaypointWithSmoothing(int index, const std::vector<dReal>& dofvalues, const std::vector<dReal>& dofvelocities, TrajectoryBasePtr traj, PlannerBasePtr planner);
+#OPENRAVE_API void ConvertTrajectorySpecification(TrajectoryBasePtr traj, const ConfigurationSpecification &spec);
+#OPENRAVE_API void ComputeTrajectoryDerivatives(TrajectoryBasePtr traj, int maxderiv);
+#OPENRAVE_API TrajectoryBasePtr ReverseTrajectory(TrajectoryBaseConstPtr traj);
+#OPENRAVE_API TrajectoryBasePtr MergeTrajectories(const std::list<TrajectoryBaseConstPtr>&listtrajectories);
+#OPENRAVE_API void GetDHParameters(std::vector<DHParameter>&vparameters, KinBodyConstPtr pbody);
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IActiveDOFTrajectorySmoother : nsISupports {
+	#ActiveDOFTrajectorySmoother(RobotBasePtr robot, const std::string& plannername="", const std::string& plannerparameters="");
+    #~ActiveDOFTrajectorySmoother();
+	long PlanPath(in ITrajectoryBase traj);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IActiveDOFTrajectoryRetimer : nsISupports {
+	#ActiveDOFTrajectoryRetimer(RobotBasePtr robot, const std::string& plannername="", const std::string& plannerparameters="");
+    #~ActiveDOFTrajectoryRetimer();
+	long PlanPath(in ITrajectoryBase traj, in boolean hastimestamps);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IAffineTrajectoryRetimer : nsISupports {
+	#AffineTrajectoryRetimer(const std::string& plannername="", const std::string& plannerparameters="");
+    #~AffineTrajectoryRetimer();
+    void SetPlanner(in string plannername, in string plannerparameters);
+	long PlanPath(in ITrajectoryBase traj, inout unsigned long maxvelocitiesCount, [array, size_is(maxvelocitiesCount)] inout float maxvelocities, inout unsigned long maxaccelerationsCount, [array, size_is(maxaccelerationsCount)] inout float maxaccelerations, in boolean hastimestamps);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IDHParameter : nsISupports {
+	attribute IKinBodyJoint joint;
+    attribute long parentindex;
+    attribute ITransformF transform;
+    attribute float d;
+    attribute float a;
+    attribute float theta;
+    attribute float alpha;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IDynamicsCollisionConstraint : nsISupports {
+	#DynamicsCollisionConstraint(PlannerBase::PlannerParametersPtr parameters, const std::list<KinBodyPtr>& listCheckBodies, int filtermask=0xffffffff);
+    #~DynamicsCollisionConstraint();
+    void SetPlannerParameters(in IPlannerBaseParameters parameters);
+    void SetFilterMask(in long filtermask);
+    void SetPerturbation(in float perturbation);
+    void SetUserCheckFunction(in ICallbackUserCheck usercheckfn, in boolean bCallAfterCheckCollision);
+	long Check(in unsigned long q0count, [array, size_is(q0count)] in float q0, in unsigned long q1count, [array, size_is(q1count)] in float q1, in unsigned long dq0count, [array, size_is(dq0count)] in float dq0, in unsigned long dq1count, [array, size_is(dq1count)] in float dq1, in float timeelapsed, in long interval, in long options, out IConstraintFilterReturn filterreturn);
+    ICollisionReport GetReport();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ILineCollisionConstraint : nsISupports {
+	#LineCollisionConstraint(const std::list<KinBodyPtr>& listCheckCollisions, bool bCheckEnv=true) : _constraint(PlannerBase::PlannerParametersPtr(), listCheckCollisions, bCheckEnv ? (CFO_CheckEnvCollisions|CFO_CheckSelfCollisions) : CFO_CheckSelfCollisions);
+    #~LineCollisionConstraint();
+	ICollisionReport GetReport(); 
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISimpleDistanceMetric : nsISupports {
+	#SimpleDistanceMetric(RobotBasePtr robot);
+	float Eval(in unsigned long c0count, [array, size_is(c0count)] in float c0, in unsigned long c1count, [array, size_is(c1count)] in float c1);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISimpleNeighborhoodSampler : nsISupports {
+	#SimpleNeighborhoodSampler(SpaceSamplerBasePtr psampler, const PlannerBase::PlannerParameters::DistMetricFn& distmetricfn, const PlannerBase::PlannerParameters::DiffStateFn& diffstatefn);
+    boolean Sample1(in unsigned long newSampleCount, [array, size_is(newSampleCount)] in float newSample, in unsigned long curSampleCount, [array, size_is(curSampleCount)] in float curSample, in float fRadius);
+    boolean Sample2(in unsigned long samplesCount, [array, size_is(samplesCount)] in float samples);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IManipulatorIKGoalSampler : nsISupports {
+	#ManipulatorIKGoalSampler(RobotBase::ManipulatorConstPtr pmanip, const std::list<IkParameterization>&listparameterizations, int nummaxsamples=20, int nummaxtries=10, dReal fsampleprob=1, bool searchfreeparameters=true, int ikfilteroptions=IKFO_CheckEnvCollisions);
+    #~ManipulatorIKGoalSampler();
+	IIkReturn Sample1();
+	boolean Sample2(in unsigned long vgoalCount, [array, size_is(vgoalCount)] in float vgoal);
+    boolean SampleAll(in unsigned long samplesCount, [array, size_is(samplesCount)] in IIkReturn samples, in long maxsamples, in long maxchecksamples);
+    long GetIkParameterizationIndex(in long index);
+    void SetSamplingProb(in float fsampleprob);
+    void SetJitter(in float maxdist);
+};

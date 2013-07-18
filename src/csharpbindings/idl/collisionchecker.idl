@@ -1,0 +1,85 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/collisionchecker.h
+# The enums CollisionOptions and CollisionAction need defining within the target language.
+
+# Prototypes
+interface ICollisionReport;
+interface ICollisionReportContact;
+interface ICollisionCheckerBase;
+interface ICollisionOptionsStateSaver;
+
+#include "nsISupports.idl"
+#include "geometry.idl"
+#include "interface.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICollisionReportContact : nsISupports {
+    attribute IVectorF pos;
+    attribute IVectorF norm;
+	attribute float depth;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICollisionReport : nsISupports {
+	#CollisionReport();
+	attribute long options;
+	attribute IKinBodyLink plink1;
+	attribute IKinBodyLink plink2;
+	attribute long numCols;
+	#attribute [array] IKinBodyLink vLinkColliding;
+	void GetLinkColliding(out unsigned long count, [array, size_is(count)] out IKinBodyLink vLinkColliding);
+	attribute float minDistance;
+	attribute long numWithinTol;
+	#attribute [array] ICollisionReportContact contacts;
+	void GetContacts(out unsigned long count, [array, size_is(count)] out ICollisionReportContact contacts);
+	void Reset(in long coloptions);
+	string __str__();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICollisionCheckerBase : IInterfaceBase {
+	boolean SetCollisionOptions(in long collisionoptions);
+	long GetCollisionOptions();
+	void SetTolerance(in float tolerance);
+	void SetGeometryGroup(in string groupname);
+	string GetGeometryGroup();
+	boolean InitEnvironment();
+	void DestroyEnvironment();
+	boolean InitKinBody(in IKinBody pbody);
+	void RemoveKinBody(in IKinBody pbody);
+	boolean CheckCollision1(in IKinBody pbody1, out ICollisionReport report);
+	boolean CheckCollision2(in IKinBody pbody1, in IKinBody pbody2, out ICollisionReport report);
+	boolean CheckCollision3(in IKinBodyLink plink, out ICollisionReport report);
+	boolean CheckCollision4(in IKinBodyLink plink1, in IKinBodyLink plink2, out ICollisionReport report);
+	boolean CheckCollision5(in IKinBodyLink plink, in IKinBody pbody, out ICollisionReport report);
+	boolean CheckCollision6(in IKinBodyLink plink, in unsigned long vbodyexcludedcount, [array, size_is(vbodyexcludedcount)] in IKinBody vbodyexcluded, in unsigned long vlinkexcludedcount, [array, size_is(vlinkexcludedcount)] in IKinBodyLink vlinkexcluded, out ICollisionReport report);
+	boolean CheckCollision7(in IKinBody pbody, in unsigned long vbodyexcludedcount, [array, size_is(vbodyexcludedcount)] in IKinBody vbodyexcluded, in unsigned long vlinkexcludedcount, [array, size_is(vlinkexcludedcount)] in IKinBodyLink vlinkexcluded, out ICollisionReport report);
+	boolean CheckCollision8(in IRayF ray, in IKinBodyLink plink, out ICollisionReport report);
+	boolean CheckCollision9(in IRayF ray, in IKinBody pbody, out ICollisionReport report);
+	boolean CheckCollision10(in IRayF ray, in ICollisionReport report);
+	boolean CheckStandaloneSelfCollision1(in IKinBody pbody, out ICollisionReport report);
+	boolean CheckStandaloneSelfCollision2(in IKinBodyLink plink, out ICollisionReport report);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICollisionOptionsStateSaver : nsISupports {
+	#CollisionOptionsStateSaver(CollisionCheckerBasePtr p, int newoptions, bool required=true);
+    #virtual ~CollisionOptionsStateSaver();
+};

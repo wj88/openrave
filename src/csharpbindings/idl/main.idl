@@ -1,0 +1,47 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#include "prototypes.idl"
+
+# Bring in all of the idl file which contains the OpenRAVE interface descriptions.
+#include "support.idl"
+#include "callbacks.idl"
+#include "collisionchecker.idl"
+#include "controller.idl"
+#include "environment.idl"
+#include "geometry.idl"
+#include "iksolver.idl"
+#include "interface.idl"
+#include "kinbody.idl"
+#include "mathextra.idl"
+#include "module.idl"
+#include "openrave.idl"
+#include "physicsengine.idl"
+#include "planner.idl"
+#include "plannerparameters.idl"
+#include "planningutils.idl"
+#include "plugin.idl"
+#include "plugininfo.idl"
+#include "robot.idl"
+#include "sensor.idl"
+#include "sensorsystem.idl"
+#include "spacesampler.idl"
+#include "trajectory.idl"
+#include "utils.idl"
+#include "viewer.idl"
+#include "xmlreaders.idl"

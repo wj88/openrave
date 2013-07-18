@@ -1,0 +1,207 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/sensor.h
+# The enums SensorType, ActuatorState, ConfigureCommand
+# need defining within the target language.
+
+#include "prototypes.idl"
+#include "interface.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackSensorData : nsISupports {
+	void Invoke(in ISensorData data);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorData : nsISupports {
+	#~SensorData();
+    long GetType();
+	boolean serialize(in nsIOutputStream O);
+	attribute unsigned long long __stamp;
+    attribute ITransformF __trans;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorLaserData : ISensorData {
+	void GetPositions(out unsigned long count, [array, size_is(count)] out float v);
+	void SetPositions(in unsigned long count, [array, size_is(count)] in float v);
+	void GetRanges(out unsigned long count, [array, size_is(count)] out float v);
+	void SetRanges(in unsigned long count, [array, size_is(count)] in float v);
+	void GetIntensity(out unsigned long count, [array, size_is(count)] out float v);
+	void SetIntensity(in unsigned long count, [array, size_is(count)] in float v);
+}; 
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorCameraData : ISensorData {
+	void GetImageData(out unsigned long count, [array, size_is(count)] out octet v);
+	void SetImageData(in unsigned long count, [array, size_is(count)] in octet v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorJontEncoderData : ISensorData {
+	void GetEncoderValues(out unsigned long count, [array, size_is(count)] out float v);
+	void SetEncoderValues(in unsigned long count, [array, size_is(count)] in float v);
+	void GetEncoderVelocity(out unsigned long count, [array, size_is(count)] out float v);
+	void SetEncoderVelocity(in unsigned long count, [array, size_is(count)] in float v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorForce6DData : ISensorData {
+	attribute IVectorF force;
+    attribute IVectorF torque;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorIMUData : ISensorData {
+	attribute IVectorF rotation;
+    attribute IVectorF angular_velocity;
+    attribute IVectorF linear_acceleration;
+	void GetRotationCoVariance(out unsigned long count, [array, size_is(count)] out float v);
+	void SetRotationCoVariance(in unsigned long count, [array, size_is(count)] in float v);
+	void GetAngularVelocityCovariance(out unsigned long count, [array, size_is(count)] out float v);
+	void SetAngularVelocityCovariance(in unsigned long count, [array, size_is(count)] in float v);
+	void GetLinearAccelerationCovariance(out unsigned long count, [array, size_is(count)] out float v);
+	void SetLinearAccelerationCovariance(in unsigned long count, [array, size_is(count)] in float v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorOdometryData : ISensorData {
+	attribute ITransformF pose;
+    attribute IVectorF linear_velocity;
+	attribute IVectorF angular_velocity;
+	void GetPoseCovariance(out unsigned long count, [array, size_is(count)] out float v);
+	void SetPoseCovariance(in unsigned long count, [array, size_is(count)] in float v);
+	void GetVelocityCovariance(out unsigned long count, [array, size_is(count)] out float v);
+	void SetVelocityCovariance(in unsigned long count, [array, size_is(count)] in float v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorTactileData : ISensorData {
+	void GetForces(out unsigned long count, [array, size_is(count)] out IVectorF v);
+	void SetForces(in unsigned long count, [array, size_is(count)] in IVectorF v);
+	void GetForceCovariance(out unsigned long count, [array, size_is(count)] out float v);
+	void SetForceCovariance(in unsigned long count, [array, size_is(count)] in float v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorActuatorData : ISensorData {
+	#ActuatorSensorData() : state(AS_Undefined), measuredcurrent(0), measuredtemperature(0), appliedcurrent(0)
+	attribute long state;
+    attribute float measuredcurrent;
+    attribute float measuredtemperature;
+    attribute float appliedcurrent;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometry : nsISupports {
+	#~SensorGeometry();
+    long GetType();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryLaserData : ISensorGeometry {
+	#LaserGeomData() : min_range(0), max_range(0), time_increment(0), time_scan(0)
+	void GetMinAngle(out unsigned long count, [array, size_is(count)] out float v);
+	void SetMinAngle(in unsigned long count, [array, size_is(count)] in float v);
+	void GetMaxAngle(out unsigned long count, [array, size_is(count)] out float v);
+	void SetMaxAngle(in unsigned long count, [array, size_is(count)] in float v);
+	void GetResolution(out unsigned long count, [array, size_is(count)] out float v);
+	void SetResolution(in unsigned long count, [array, size_is(count)] in float v);
+	attribute float min_range;
+	attribute float max_range;
+	attribute float time_increment;
+	attribute float time_scan; 
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryCameraData : ISensorGeometry {
+	#CameraGeomData() : width(0), height(0);
+    attribute ICameraIntrinsicsF KK;
+    attribute long width;
+	attribute long height;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryJointEncoderData : ISensorGeometry {
+	#JointEncoderGeomData() : resolution(0);
+	void GetResolution(out unsigned long count, [array, size_is(count)] out float v);
+	void SetResolution(in unsigned long count, [array, size_is(count)] in float v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryForce6DData : ISensorGeometry {
+
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryIMUData : ISensorGeometry {
+	attribute float time_measurement;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryOdometryData : ISensorGeometry {
+	attribute string targetid;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryTactileDataFriction : nsISupports {
+	attribute string name;
+	attribute float sigma_0;
+    attribute float sigma_1;
+    attribute float mu_s;
+    attribute float mu_d;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryTactileData : ISensorGeometry {
+	void GetPositions(out unsigned long count, [array, size_is(count)] out IVectorF v);
+	void SetPositions(in unsigned long count, [array, size_is(count)] in IVectorF v);
+    attribute float thickness;	
+	void GetFrictionMap(out unsigned long count, [array, size_is(count)] out ISensorGeometryTactileDataFriction v);
+	void SetFrictionMap(in unsigned long count, [array, size_is(count)] in ISensorGeometryTactileDataFriction v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorGeometryActuatorData : ISensorGeometry {
+	attribute float maxtorque;
+	attribute float maxcurrent;
+	attribute float nominalcurrent;
+	attribute float maxvelocity;
+	attribute float maxacceleration;
+	attribute float maxjerk;
+	attribute float staticfriction;
+	attribute float viscousfriction;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISensorBase : IInterfaceBase {
+	#SensorBase(EnvironmentBasePtr penv) : InterfaceBase(PT_Sensor, penv);
+    #~SensorBase();
+	long Configure(in long command, in boolean blocking);
+	boolean SimulationStep(in float fTimeElapsed);
+	ISensorGeometry GetSensorGeometry(in long type);
+	ISensorData CreateSensorData(in long type);
+	boolean GetSensorData(in ISensorData psensordata);
+	boolean Supports(in long type);
+	void SetTransform(in ITransformF trans);
+	ITransformF GetTransform();
+	IUserData RegisterDataCallback(in long type, in ICallbackSensorData callback);
+	string GetName();
+	void SetName(in string newname);
+};

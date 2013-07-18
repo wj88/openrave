@@ -1,0 +1,124 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/plannerparameters.h
+
+#include "prototypes.idl"
+#include "planner.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IExplorationParameters : IPlannerBaseParameters {
+	#ExplorationParameters() : _fExploreProb(0), _nExpectedDataSize(100), _bProcessingExploration(false);
+	attribute float _fExploreProb;
+    attribute long _nExpectedDataSize;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRAStarParameters : IPlannerBaseParameters {
+	#RAStarParameters() : fRadius(0.1f), fDistThresh(0.03f), fGoalCoeff(1), nMaxChildren(5), nMaxSampleTries(10), _bProcessingRA(false);
+    attribute float fRadius;
+    attribute float fDistThresh;
+    attribute float fGoalCoeff;
+    attribute long nMaxChildren;
+    attribute long nMaxSampleTries;
+};
+ 
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IGraspSetParameters : IPlannerBaseParameters {
+	#GraspSetParameters(EnvironmentBasePtr penv) : _nGradientSamples(5), _fVisibiltyGraspThresh(0), _fGraspDistThresh(1.4f), _penv(penv),_bProcessingGS(false);
+	void GetGrasps(out unsigned long count, [array, size_is(count)] out ITransformF v);
+	void SetGrasps(in unsigned long count, [array, size_is(count)] in ITransformF v);
+	attribute IKinBody _ptarget;
+    attribute long _nGradientSamples;
+    attribute float _fVisibiltyGraspThresh;
+    attribute float _fGraspDistThresh;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IGraspParameters : IPlannerBaseParameters {
+	#GraspParameters(EnvironmentBasePtr penv) : PlannerBase::PlannerParameters(), fstandoff(0), ftargetroll(0), vtargetdirection(0,0,1), btransformrobot(false), breturntrajectory(false), bonlycontacttarget(true), btightgrasp(false), bavoidcontact(false), fcoarsestep(0.1f), ffinestep(0.001f), ftranslationstepmult(0.1f), fgraspingnoise(0), _penv(penv);
+	attribute float fstandoff;
+    attribute IKinBody targetbody;
+    attribute float ftargetroll;
+    attribute IVectorF vtargetdirection;
+    attribute IVectorF vtargetposition;
+    attribute IVectorF vmanipulatordirection;
+    attribute boolean btransformrobot;
+    attribute boolean breturntrajectory;
+    attribute boolean bonlycontacttarget;
+    attribute boolean btightgrasp;
+    attribute boolean bavoidcontact;
+    void GetAvoidLinkGeometry(out unsigned long count, [array, size_is(count)] out string v);
+	void SetAvoidLinkGeometry(in unsigned long count, [array, size_is(count)] in string v);
+    attribute float fcoarsestep;
+    attribute float ffinestep;
+    attribute float ftranslationstepmult;
+    attribute float fgraspingnoise;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ITrajectoryTimingParameters : IPlannerBaseParameters {
+	#TrajectoryTimingParameters() : _interpolation(""), _pointtolerance(0.2), _hastimestamps(false), _hasvelocities(false), _outputaccelchanges(true), _multidofinterp(0), _bProcessing(false);
+    attribute string _interpolation;
+    attribute float _pointtolerance;
+    attribute boolean _hastimestamps;
+	attribute boolean _hasvelocities;
+    attribute boolean _outputaccelchanges;
+    attribute long _multidofinterp;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IConstraintTrajectoryTimingParameters : ITrajectoryTimingParameters {
+	#ConstraintTrajectoryTimingParameters() : TrajectoryTimingParameters(), maxlinkspeed(0), maxlinkaccel(0), maxmanipspeed(0), maxmanipaccel(0), mingripperdistance(0), velocitydistancethresh(0), maxmergeiterations(1000), minswitchtime(0.2),nshortcutcycles(1), verifyinitialpath(1), _bCProcessing(false);
+    attribute float maxlinkspeed;
+    attribute float maxlinkaccel;
+    attribute float maxmanipspeed;
+    attribute float maxmanipaccel;
+    attribute float mingripperdistance;
+    attribute float velocitydistancethresh;
+    attribute long maxmergeiterations;
+    attribute float minswitchtime;
+    attribute long nshortcutcycles;
+    attribute long verifyinitialpath;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IWorkspaceTrajectoryParameters : IPlannerBaseParameters {
+	#WorkspaceTrajectoryParameters(EnvironmentBasePtr penv);
+    IEnvironmentBase GetEnv();
+	attribute float maxdeviationangle;
+    attribute boolean maintaintiming;
+    attribute boolean greedysearch;
+    attribute float ignorefirstcollision;
+    attribute float ignorefirstcollisionee;
+    attribute float ignorelastcollisionee;
+    attribute float minimumcompletetime;
+    attribute ITrajectoryBase workspacetraj;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRRTParameters : IPlannerBaseParameters {
+	#RRTParameters() : _minimumgoalpaths(1), _bProcessing(false);
+	attribute long _minimumgoalpaths;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IBasicRRTParameters : IRRTParameters {
+	#BasicRRTParameters() : RRTParameters(), _fGoalBiasProb(0.05f), _bProcessing(false);
+	attribute float _fGoalBiasProb;
+};

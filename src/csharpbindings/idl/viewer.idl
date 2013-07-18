@@ -1,0 +1,63 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/viewer.h
+
+#include "prototypes.idl"
+#include "interface.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackViewerImage : nsISupports {
+	void Invoke(in unsigned long dataCount, [array, size_is(dataCount)] in octet data, in long width, in long height, in long depth);
+};
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackItemSelection : nsISupports {
+	boolean Invoke(in IKinBodyLink plink, in IVectorF offset, in IVectorF direction);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IGraphHandle : nsISupports {
+	#~GraphHandle();
+	void SetTransform(in ITransformF t);
+    void SetShow(in boolean bshow);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IViewerBase : IInterfaceBase {
+	#ViewerBase(EnvironmentBasePtr penv) : InterfaceBase(PT_Viewer, penv);
+    #~ViewerBase();
+	void RemoveKinBody(in IKinBody pbody);
+    long main(in boolean bShow);
+	void quitmainloop();
+    void SetCamera(in ITransformF trans, in float focalDistance);
+    ITransformF GetCameraTransform();
+    ICameraIntrinsicsF GetCameraIntrinsics();
+    boolean GetCameraImage(inout unsigned long memoryCount, [array, size_is(memoryCount)] inout octet memory, in long width, in long height, in ITransformF t, in ICameraIntrinsicsF intrinsics);
+    void Reset();
+    void SetBkgndColor(in IVectorF color);
+    IUserData RegisterItemSelectionCallback(in ICallbackItemSelection fncallback);
+    IUserData RegisterViewerImageCallback(in ICallbackViewerImage fncallback);
+    IUserData RegisterViewerThreadCallback(in ICallback fncallback);
+    void SetEnvironmentSync(in boolean bUpdate);
+    void EnvironmentSync();
+    void SetSize(in long w, in long h);
+    void Move(in long x, in long y);
+    void SetName(in string name);
+    string GetName();
+};

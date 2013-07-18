@@ -1,0 +1,293 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/module.h
+# The enums OpenRAVEErrorCode, DebugLevel, InterfaceType, CloningOptions, ProcessElement,
+# IkParameterizationType, DOFAffine need defining within the target language.
+
+#include "prototypes.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackSetConfigurationState : nsISupports {
+	void Invoke(in unsigned long count, [array, size_is(count)] in float v);
+};
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackGetConfigurationState : nsISupports {
+	void Invoke(out unsigned long count, [array, size_is(count)] out float v);
+};
+
+# Common math functions and GetErrorCodeString not implemented as not class members, however,
+# the math functions do look like they are PInvoke'able.
+
+# The class openrave_exception is not implemented as XPCOM doesn't permit exception to transfer
+# over the interface. There are XPCOM return values that deal with the Exceptions.
+
+# The class CaseInsensitiveCompare is not implemented. I don't believe it needs to be as most
+# modern high level languages support such a thing.
+
+# The terminal related functions are not implemented.
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IUserData : nsISupports {
+
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISerializableData : IUserData {
+	void Serialize(in nsIOutputStream O, in long options);
+	void Deserialize(in nsIInputStream I);
+};
+
+# The following debug level get/set methods could be PInvoke'd. There are equivelent versions
+# in relation to the Context, so we'll use them.
+#OPENRAVE_API void RaveSetDebugLevel(int level);
+#OPENRAVE_API int RaveGetDebugLevel();
+
+# The Printf related functions are not implemented.
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IXMLReadable : IUserData {
+	#IXMLReadable(const std::string& xmlid) : __xmlid(xmlid);
+    #~IXMLReadable();
+	void Serialize1(in nsIOutputStream O, in long options);
+	void Deserialize(in nsIInputStream I);
+	void Serialize2(in IBaseXMLWriter writer, in long options);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IBaseXMLReader : nsISupports {
+	#IBaseXMLReader();
+    #~IBaseXMLReader();
+	IXMLReadable GetReadable();
+	long startElement(in string name, in nsIProperties atts);
+	boolean endElement(in string name);
+	void characters(out string ch);
+	attribute string _filename;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IDummyXMLReader : nsISupports {
+	#IDummyXMLReader(const std::string& fieldname, const std::string& parentname, boost::shared_ptr<std::ostream> osrecord = boost::shared_ptr<std::ostream>());
+    long startElement(in string name, in nsIProperties atts);
+    boolean endElement(in string name);
+    void characters(out string ch);
+    string GetFieldName();
+    nsIOutputStream GetStream();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IBaseXMLWriter : nsISupports {
+	#~BaseXMLWriter();
+	string GetFormat();
+	void SetCharData(in string data);
+	IBaseXMLWriter AddChild(in string xmltag, in nsIProperties atts);
+};
+
+# The RaveGetIkParameterizationMap and RaveGetIkTypeFromUniqueId functions are
+# not implemented although could be Pinvoke'd.
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IConfigurationSpecificationReader : IBaseXMLReader {
+	#Reader(ConfigurationSpecification& spec);
+    #long startElement(in string name, nsIProperties atts);
+    #boolean endElement(in string name);
+    #void characters(out string ch);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IConfigurationSpecificationGroup : nsISupports {
+	#Group() : offset(0), dof(0)
+	attribute long offset;
+	attribute long dof;
+	attribute string name;
+	attribute string interpolation;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IConfigurationSpecification : nsISupports {
+	#~ConfigurationSpecification();
+	long GetDOF();
+	boolean IsValid();
+	void Validate();
+	IConfigurationSpecificationGroup GetGroupFromName(in string name);
+	# Hmmm.... I'll have to come back to these (line 1059).	
+	#std::vector<Group>::const_iterator FindCompatibleGroup(const Group& g, bool exactmatch=false);
+	#std::vector<Group>::const_iterator FindCompatibleGroup(const std::string& name, bool exactmatch=false);
+	#std::vector<Group>::const_iterator FindTimeDerivativeGroup(const Group& g, bool exactmatch=false);
+	#std::vector<Group>::const_iterator FindTimeDerivativeGroup(const std::string& name, bool exactmatch=false);
+	void AddDerivativeGroups(in long deriv, in boolean adddeltatime);
+	IConfigurationSpecification ConvertToVelocitySpecification();
+	IConfigurationSpecification GetTimeDerivativeSpecification(in long timederivative);
+	void ResetGroupOffsets();
+	long AddDeltaTimeGroup();
+	long AddGroup(in string name, in long dof, in string interpolation);
+	boolean ExtractTransform(inout ITransformF t, in unsigned long itdataCount, [array, size_is(itdataCount)] in float itdata, in IKinBody pbody, in long timederivative);
+	boolean ExtractIkParameterization(inout IIkParameterization ikparam, in unsigned long itdataCount, [array, size_is(itdataCount)] in float itdata, in long timederivative);
+	boolean ExtractAffineValues(inout unsigned long itvaluesCount, [array, size_is(itvaluesCount)] inout float itvalues, in unsigned long itdataCount, [array, size_is(itdataCount)] in float itdata, in IKinBody pbody, in long affinedofs, in long timederivative);
+	boolean ExtractJointValues(inout unsigned long itvaluesCount, [array, size_is(itvaluesCount)] inout float itvalues, in unsigned long itdataCount, [array, size_is(itdataCount)] in float itdata, in IKinBody pbody, in unsigned long indicesCount, [array, size_is(indicesCount)] in long indices, in long timederivative);
+	boolean ExtractDeltaTime(out float deltatime, in unsigned long itdataCount, [array, size_is(itdataCount)] in float itdata);
+	boolean InsertJointValues(inout unsigned long itdataCount, [array, size_is(itdataCount)] inout float itdata, in unsigned long itvaluesCount, [array, size_is(itvaluesCount)] in float itvalues, in IKinBody pbody, in unsigned long indicesCount, [array, size_is(indicesCount)] in long indices, in long timederivative);
+	boolean InsertDeltaTime(inout unsigned long itdataCount, [array, size_is(itdataCount)] inout float itdata, in float deltatime);
+	#long AddGroup(in IConfigurationSpecificationGroup g);
+	long RemoveGroups(in string groupname, in boolean exactmatch);
+	void ExtractUsedBodies(in IEnvironmentBase env, out unsigned long usedbodiesCount, [array, size_is(usedbodiesCount)] out IKinBody usedbodies);
+	void ExtractUsedIndices(in IKinBody body, out unsigned long useddofindicesCount, [array, size_is(useddofindicesCount)] out long useddofindices, out unsigned long usedconfigindicesCount, [array, size_is(usedconfigindicesCount)] out long usedconfigindices);
+	void Swap(in IConfigurationSpecification spec);
+	ICallbackSetConfigurationState GetSetFn(in IEnvironmentBase env);
+	ICallbackGetConfigurationState GetGetFn(in IEnvironmentBase env);
+	void ConvertGroupData(inout unsigned long ittargetdataCount, [array, size_is(ittargetdataCount)] inout float ittargetdata, inout long targetstride, inout IConfigurationSpecificationGroup gtarget, in unsigned long itsourcedataCount, [array, size_is(itsourcedataCount)] in float itsourcedata, in long sourcestride, in IConfigurationSpecificationGroup gsource, in long numpoints, in IEnvironmentBase penv, in boolean filluninitialized);
+	void ConvertData(inout unsigned long ittargetdataCount, [array, size_is(ittargetdataCount)] inout float ittargetdata, inout IConfigurationSpecification targetspec, in unsigned long itsourcedataCount, [array, size_is(itsourcedataCount)] in float itsourcedata, in IConfigurationSpecification sourcespec, in long numpoints, in IEnvironmentBase penv, in boolean filluninitialized);
+	string GetInterpolationDerivative(in string interpolation, in long deriv);
+	# Ignoring (line 1289)
+	#std::vector<Group> _vgroups;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IIkParameterization : nsISupports {
+	#IkParameterization();
+    #IkParameterization(const Transform &t)
+    #IkParameterization(const RAY &r)
+    #IkParameterization(const Transform &t, IkParameterizationType type)
+	long GetType();
+	string GetName();
+	long GetDOF1(in long type);
+	long GetDOF2();
+	long GetNumberOfValues1(in long type);
+	# Not implemented yet (line 1389)
+	#std::map<IkParameterizationType,std::string>& GetIkParameterizationMap(int alllowercase=0);
+	long GetIkTypeFromUniqueId(in long uniqueid);
+	long GetNumberOfValues2();
+	void SetTransform6D(in ITransformF t);
+	void SetRotation3D(in IVectorF quaternion);
+	void SetTranslation3D(in IVectorF trans);
+	void SetDirection3D(in IVectorF dir);
+	void SetRay4D(in IRayF ray);
+	void SetLookat3D1(in IVectorF trans);
+	void SetLookat3D2(in IRayF ray);
+	void SetTranslationDirection5D(in IRayF ray);
+	void SetTranslationXY2D(in IVectorF trans);
+	void SetTranslationXYOrientation3D(in IVectorF trans);
+	void SetTranslationLocalGlobal6D(in IVectorF localtrans, in IVectorF trans);
+	void SetTranslationXAxisAngle4D(in IVectorF trans, in float angle);
+	void SetTranslationYAxisAngle4D(in IVectorF trans, in float angle);
+	void SetTranslationZAxisAngle4D(in IVectorF trans, in float angle);
+	void SetTranslationXAxisAngleZNorm4D(in IVectorF trans, in float angle);
+	void SetTranslationYAxisAngleZNorm4D(in IVectorF trans, in float angle);
+	void SetTranslationZAxisAngleZNorm4D(in IVectorF trans, in float angle);
+	ITransformF GetTransform6D();
+	IVectorF GetRotation3D();
+	IVectorF GetTranslation3D();
+	IVectorF GetDirection3D();
+	IRayF GetRay4D();
+	IVectorF GetLookat3D();
+	IVectorF GetLookat3DDirection();
+	IRayF GetTranslationDirection5D();
+	IVectorF GetTranslationXY2D();
+	IVectorF GetTranslationXYOrientation3D();
+	void GetTranslationLocalGlobal6D(out IVectorF rot, out IVectorF trans);
+	void GetTranslationXAxisAngle4D(out IVectorF trans, out float rot);
+	void GetTranslationYAxisAngle4D(out IVectorF trans, out float rot);
+	void GetTranslationZAxisAngle4D(out IVectorF trans, out float rot);
+	void GetTranslationXAxisAngleZNorm4D(out IVectorF trans, out float rot);
+	void GetTranslationYAxisAngleZNorm4D(out IVectorF trans, out float rot);
+	void GetTranslationZAxisAngleZNorm4D(out IVectorF trans, out float rot);
+	float ComputeDistanceSqr(in IIkParameterization ikparam);
+	void GetValues(inout unsigned long itvaluesCount, [array, size_is(itvaluesCount)] inout float itvalues);
+	void SetValues(in unsigned long itvaluesCount, [array, size_is(itvaluesCount)] in float itvalues, in long iktype);
+	void Set(in unsigned long itvaluesCount, [array, size_is(itvaluesCount)] in float itvalues, in long iktype);
+	void SetCustomValues(in string name, in unsigned long valuesCount, [array, size_is(valuesCount)] in float values);
+	void SetCustomValue(in string name, in float value);
+	boolean GetCustomValues(in string name, out unsigned long valuesCount, [array, size_is(valuesCount)] out float values);
+	# Not implemented (line 1846)
+	#std::map<std::string, std::vector<dReal> >& GetCustomDataMap();
+	long ClearCustomValues(in string name);
+	IConfigurationSpecification GetConfigurationSpecification(in string interpolation);
+	IIkParameterization MultiplyTransform(in ITransformF t);
+	IIkParameterization MultiplyTransformRight(in ITransformF t);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ITriMesh : nsISupports {
+	void GetVertices(out unsigned long count, [array, size_is(count)] out IVectorF values);
+	void SetVertices(in unsigned long count, [array, size_is(count)] in IVectorF values);
+	void GetIndices(out unsigned long count, [array, size_is(count)] out long values);
+	void SetIndices(in unsigned long count, [array, size_is(count)] in long values);
+
+    void ApplyTransform1(in ITransformF t);
+    void ApplyTransform2(in ITransformMatrixF t);
+
+    void Append1(in ITriMesh mesh);
+    void Append2(in ITriMesh mesh, in ITransformF trans);
+
+    IAABBF ComputeAABB();
+    void serialize(in nsIOutputStream o, in long options);
+};
+
+
+# Most of the following functions could be PInvoke'd but they would still have to belong to a class.
+#OPENRAVE_API int RaveGetIndexFromAffineDOF(int affinedofs, DOFAffine dof);
+#OPENRAVE_API DOFAffine RaveGetAffineDOFFromIndex(int affinedofs, int index);
+#OPENRAVE_API int RaveGetAffineDOF(int affinedofs);
+#OPENRAVE_API void RaveGetAffineDOFValuesFromTransform(std::vector<dReal>::iterator itvalues, const Transform& t, int affinedofs, const Vector& axis=Vector(0,0,1));
+#OPENRAVE_API void RaveGetAffineDOFValuesFromVelocity(std::vector<dReal>::iterator itvalues, const Vector& linearvel, const Vector& angularvel, const Vector& quatrotation, int affinedofs, const Vector& axis=Vector(0,0,1));
+#OPENRAVE_API void RaveGetTransformFromAffineDOFValues(Transform& t, std::vector<dReal>::const_iterator itvalues, int affinedofs, const Vector& axis=Vector(0,0,1), bool normalize=true);
+#OPENRAVE_API void RaveGetVelocityFromAffineDOFVelocities(Vector& linearvel, Vector& angularvel, std::vector<dReal>::const_iterator itvalues, int affinedofs, const Vector& axis=Vector(0,0,1), const Vector& quatrotation = Vector(1,0,0,0));
+#OPENRAVE_API ConfigurationSpecification RaveGetAffineConfigurationSpecification(int affinedofs,KinBodyConstPtr pbody=KinBodyConstPtr(),const std::string& interpolation="");
+#char* RaveGetInterfaceHash(InterfaceType type);
+#OPENRAVE_API const std::map<InterfaceType,std::string>& RaveGetInterfaceNamesMap();
+#OPENRAVE_API const std::string& RaveGetInterfaceName(InterfaceType type);
+#OPENRAVE_API std::string RaveGetHomeDirectory();
+#OPENRAVE_API std::string RaveFindDatabaseFile(const std::string& filename, bool bRead=true);
+#OPENRAVE_API int RaveInitialize(bool bLoadAllPlugins=true, int level = Level_Info);
+#OPENRAVE_API void RaveInitializeFromState(UserDataPtr globalstate);
+#OPENRAVE_API UserDataPtr RaveGlobalState();
+#OPENRAVE_API void RaveDestroy();
+#OPENRAVE_API void RaveAddCallbackForDestroy(const boost::function<void()>& fn);
+#OPENRAVE_API void RaveGetPluginInfo(std::list< std::pair<std::string, PLUGININFO> >& plugins);
+#OPENRAVE_API void RaveGetLoadedInterfaces(std::map<InterfaceType, std::vector<std::string> >& interfacenames);
+#OPENRAVE_API void RaveReloadPlugins();
+#OPENRAVE_API bool RaveLoadPlugin(const std::string& libraryname);
+#OPENRAVE_API bool RaveHasInterface(InterfaceType type, const std::string& interfacename);
+#OPENRAVE_API InterfaceBasePtr RaveCreateInterface(EnvironmentBasePtr env, InterfaceType type,const std::string& interfacename);
+#OPENRAVE_API RobotBasePtr RaveCreateRobot(EnvironmentBasePtr env, const std::string& name="");
+#OPENRAVE_API PlannerBasePtr RaveCreatePlanner(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API SensorSystemBasePtr RaveCreateSensorSystem(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API ControllerBasePtr RaveCreateController(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API ModuleBasePtr RaveCreateModule(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API ModuleBasePtr RaveCreateProblem(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API ModuleBasePtr RaveCreateProblemInstance(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API IkSolverBasePtr RaveCreateIkSolver(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API PhysicsEngineBasePtr RaveCreatePhysicsEngine(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API SensorBasePtr RaveCreateSensor(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API CollisionCheckerBasePtr RaveCreateCollisionChecker(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API ViewerBasePtr RaveCreateViewer(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API SpaceSamplerBasePtr RaveCreateSpaceSampler(EnvironmentBasePtr env, const std::string& name);
+#OPENRAVE_API KinBodyPtr RaveCreateKinBody(EnvironmentBasePtr env, const std::string& name="");
+#OPENRAVE_API TrajectoryBasePtr RaveCreateTrajectory(EnvironmentBasePtr env, const std::string& name="");
+#OPENRAVE_API UserDataPtr RaveRegisterInterface(InterfaceType type, const std::string& name, const char* interfacehash, const char* envhash, const boost::function<InterfaceBasePtr(EnvironmentBasePtr, std::istream&)>& createfn);
+#OPENRAVE_API UserDataPtr RaveRegisterXMLReader(InterfaceType type, const std::string& xmltag, const CreateXMLReaderFn& fn);
+#OPENRAVE_API int RaveGetEnvironmentId(EnvironmentBasePtr env);
+#OPENRAVE_API EnvironmentBasePtr RaveGetEnvironment(int id);
+#OPENRAVE_API void RaveGetEnvironments(std::list<EnvironmentBasePtr>& listenvironments);
+#OPENRAVE_API BaseXMLReaderPtr RaveCallXMLReader(InterfaceType type, const std::string& xmltag, InterfaceBasePtr pinterface, const AttributesList& atts);
+#OPENRAVE_API std::string RaveFindLocalFile(const std::string& filename, const std::string& curdir="");
+#OPENRAVE_API void RaveSetDataAccess(int accessoptions);
+#OPENRAVE_API int RaveGetDataAccess();
+#inline bool RaveParseDirectories(const char* pdirs, std::vector<std::string>& vdirs)
+#const std::string& IkParameterization::GetName() const

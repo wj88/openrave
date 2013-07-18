@@ -1,0 +1,110 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Prototypes
+interface ICallbackRegisterInterface;
+interface IUserData;
+interface ISerializableData;
+interface IXMLReadable;
+interface IBaseXMLReader;
+interface IDummyXMLReader;
+interface IBaseXMLWriter;
+interface IConfigurationSpecificationReader;
+interface IConfigurationSpecificationGroup;
+interface IConfigurationSpecification;
+interface IIkParameterization;
+interface ITriMesh;
+
+#include "nsISupports.idl"
+#include "nsIProperties.idl"
+#include "nsIInputStream.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackRegisterInterface : nsISupports {
+	IInterfaceBase Invoke(in IEnvironmentBase env, in nsIInputStream istream);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IPlugin : IUserData {
+	# Construction is done through the IRaveDatabase
+	void Destroy();
+	boolean IsValid();
+	string GetName();
+	boolean GetPluginInfo(out IPluginInfo info);
+	boolean Load_CreateInterfaceGlobal();
+	boolean Load_GetPluginAttributes();
+	boolean Load_DestroyPlugin();
+	boolean HasInterface(in long type, in string name);
+	IInterfaceBase CreateInterface(in long type, in string name, in string interfacehash, in IEnvironmentBase penv);        
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRaveDatabase : nsISupports {
+	IRobotBase CreateRobot(in IEnvironmentBase penv, in string name);
+	IKinBody CreateKinBody(in IEnvironmentBase penv, in string name);
+    IPlannerBase CreatePlanner(in IEnvironmentBase penv, in string name);
+    ISensorSystemBase CreateSensorSystem(in IEnvironmentBase penv, in string name);
+    IControllerBase CreateController(in IEnvironmentBase penv, in string name);
+    IModuleBase CreateModule(in IEnvironmentBase penv, in string name);
+    IIkSolverBase CreateIkSolver(in IEnvironmentBase penv, in string name);
+    IPhysicsEngineBase CreatePhysicsEngine(in IEnvironmentBase penv, in string name);
+    ISensorBase CreateSensor(in IEnvironmentBase penv, in string name);
+    ICollisionCheckerBase CreateCollisionChecker(in IEnvironmentBase penv, in string name);
+    IViewerBase CreateViewer(in IEnvironmentBase penv, in string name);
+    ITrajectoryBase CreateTrajectory(in IEnvironmentBase penv, in string name);
+    ISpaceSamplerBase CreateSpaceSampler(in IEnvironmentBase penv, in string name);
+	boolean Init(in boolean bLoadAllPlugins);
+	void Destroy();
+	void GetPlugins(out unsigned long count, [array, size_is(count)] out IPlugin listplugins);
+	IInterfaceBase Create(in IEnvironmentBase penv, in long type, in string name);
+	boolean AddDirectory(in string pdir);
+	void ReloadPlugins();
+	boolean LoadPlugin(in string pluginname);
+	boolean RemovePlugin(in string pluginname);
+	boolean HasInterface(in long type, in string interfacename);
+	void GetPluginInfo(out unsigned long count, [array, size_is(count)] out nsIProperties plugins);
+	void GetLoadedInterfaces(out unsigned long count, [array, size_is(count)] out long interfaces, [array, size_is(count)] out string names);
+	IUserData RegisterInterface(in long type, in string name, in string interfacehash, in string envhash, in ICallbackRegisterInterface createfn);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRaveGlobal : nsISupports {
+	long Initialize(in boolean bLoadAllPlugins, in long level);
+	void Destroy();
+	void AddCallbackForDestroy(in ICallback callback);
+	string GetHomeDirectory();
+	string FindDatabaseFile(in string filename, in boolean bRead);
+	void SetDebugLevel(in long level);
+	long GetDebugLevel();
+	
+	IRaveDatabase GetDatabase();
+	nsIProperties GetInterfaceNamesMap();
+	nsIProperties GetIkParameterizationMap(in long lowercase);
+	string GetInterfaceName(in long type);
+	
+	long RegisterEnvironment(in IEnvironmentBase penv);
+	void UnregisterEnvironment(in IEnvironmentBase penv);
+	long GetEnvironmentId(in IEnvironmentBase penv);
+	IEnvironmentBase GetEnvironment(in long id);
+	void GetEnvironments(out unsigned long count, [array, size_is(count)] out IEnvironmentBase environments);
+	ISpaceSamplerBase GetDefaultSampler();
+	string FindLocalFile(in string filename, in string curdir);
+	boolean InvertFileLookup(in string newfilename, in string filename);
+	void SetDataAccess(in long options);
+	long GetDataAccess();	
+};

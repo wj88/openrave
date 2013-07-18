@@ -1,0 +1,41 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/spacesampler.h
+# The enums IntervalType, SampleDataType need defining within the target language.
+
+#include "prototypes.idl"
+#include "interface.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ISpaceSamplerBase : IInterfaceBase {
+	#SpaceSamplerBase(EnvironmentBasePtr penv) : InterfaceBase(PT_SpaceSampler, penv);
+    #~SpaceSamplerBase();
+	void SetSeed(in unsigned long seed);
+    void SetSpaceDOF(in long dof);
+    long GetDOF();
+    long GetNumberOfValues();
+    boolean Supports(in long type);
+    void GetLimits(out unsigned long vLowerLimitCount, [array, size_is(vLowerLimitCount)] out float vLowerLimit, out unsigned long vUpperLimitCount, [array, size_is(vUpperLimitCount)] out float vUpperLimit);
+    void SampleSequence1(out unsigned long samplesCount, [array, size_is(samplesCount)] out float samples, in long num, in long interval);
+    float SampleSequenceOneReal(in long interval);
+    void SampleSequence2(out unsigned long sampleCount, [array, size_is(sampleCount)] out unsigned long sample, in long num);
+    unsigned long SampleSequenceOneUInt32();
+    void SampleComplete1(out unsigned long samplesCount, [array, size_is(samplesCount)] out float samples, in long num, in long interval);
+    void SampleComplete2(out unsigned long samplesCount, [array, size_is(samplesCount)] out unsigned long samples, in long num);
+};

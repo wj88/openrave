@@ -1,0 +1,60 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/controller.h
+
+#include "prototypes.idl"
+#include "interface.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IControllerBase : IInterfaceBase {
+	#ControllerBase(EnvironmentBasePtr penv) : InterfaceBase(PT_Controller, penv);
+    #~ControllerBase();
+	boolean Init(in IRobotBase robot, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices, in long nControlTransformation);
+    void GetControlDOFIndices(out unsigned long dofindicesCount, [array, size_is(dofindicesCount)] out long dofindices);
+    long IsControlTransformation();
+    IRobotBase GetRobot();
+    void Reset(in long options);
+    boolean SetDesired(in unsigned long valuesCount, [array, size_is(valuesCount)] in float values, in ITransformF trans);
+    boolean SetPath(in ITrajectoryBase ptraj);
+    void SimulationStep(in float fTimeElapsed);
+    boolean IsDone();
+    float GetTime();
+    void GetVelocity(out unsigned long velCount, [array, size_is(velCount)] out float vel);
+    void GetTorque(out unsigned long torqueCount, [array, size_is(torqueCount)] out float torque);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IMultiController : IControllerBase {
+	# Commented out inheritted members;
+	#boolean Init(in IRobotBase robot, in unsigned long dofindicescount, [array, size_is(dofindicescount)] in long dofindices, in long nControlTransformation);
+    #void GetControlDOFIndices(out unsigned long dofindicescount, [array, size_is(dofindicescount)] out long dofindices);
+	#long IsControlTransformation();
+    #IRobotBase GetRobot();
+	boolean AttachController(in IControllerBase controller, in unsigned long dofindicescount, [array, size_is(dofindicescount)] in long dofindices, in long nControlTransformation);
+	void RemoveController(in IControllerBase controller);
+	IControllerBase GetController(in long dof);
+	#void Reset(in long options);
+    #boolen SetDesired(in unsigned long valuescount, [array, size_is(valuescount)] in long values, ITransform trans);
+    #boolean SetPath(in ITrajectoryBase ptraj);
+    #void SimulationStep(in float fTimeElapsed);
+	#boolean IsDone();
+	#float GetTime();
+	#void GetVelocity(out unsigned long velcount, [array, size_is(velcount)] out float vel);
+	#void GetTorque(out unsigned long torquecount, [array, size_is(torquecount)] out float torque);
+};

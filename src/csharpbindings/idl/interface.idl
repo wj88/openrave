@@ -1,0 +1,83 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/interface.h
+# The enum SerializationOptions needs defining within the target language.
+
+#include "prototypes.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackInterfaceCommand : nsISupports {
+	boolean Invoke(in nsIOutputStream os, in nsIInputStream is);
+};
+
+# Not entirely sure whether having access to the ReadersMap from over XPCOM
+# is worth it. For now, we'll assume not until the requirement arises.
+
+#[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+#interface IInterfaceBaseReadersMapKVP : nsISupports {
+#	attribute string key;
+#	attribute XMLReadable value;
+#};
+
+#[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+#interface IInterfaceBaseReadersMap : nsISupports {
+#	XMLReadable Get(string key);
+#};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IInterfaceCommand : nsISupports {
+	#InterfaceCommand();
+    #InterfaceCommand(ICallbackInterfaceCommand newfn, string newhelp) : fn(newfn), help(newhelp);
+    attribute ICallbackInterfaceCommand fn;
+    attribute string help;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IInterfaceBase : nsISupports {
+	# Implementation is a static method in IRaveDatabase.
+	string GetInterfaceHash();
+	
+	#InterfaceBase(long type, IEnvironmentBase penv);
+    #virtual ~InterfaceBase();
+
+	long GetInterfaceType();
+	string GetXMLId();
+	string GetPluginName();
+	IEnvironmentBase GetEnv();
+	#IInterfaceBaseReadersMap GetReadableInterfaces();
+	IXMLReadable GetReadableInterface(in string xmltag);
+	IXMLReadable SetReadableInterface(in string xmltag, in IXMLReadable readable);
+	string GetDescription();
+	void SetDescription(in string description);
+	void SetUserData(in string key, in IUserData data);
+	IUserData GetUserData(in string key);
+	boolean RemoveUserData(in string key);
+	string GetURI();
+	string GetXMLFilename();
+	void Clone(in IInterfaceBase preference, in long cloningoptions);
+	boolean SendCommand(in nsIOutputStream os, in nsIInputStream is);
+	void Serialize(in IBaseXMLWriter writer, in long options);
+	void RegisterCommand(in string cmdname, in ICallbackInterfaceCommand fncmd, in string strhelp);
+	void UnregisterCommand(in string cmdname);
+	string GetHash();
+	
+	# Not sure this should be public. If required, we can add it in.
+	#attribute string __description;
+	IMutex GetInterfaceMutex();	
+};

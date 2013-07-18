@@ -1,0 +1,74 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/iksolver.h
+# The enums IkFilterOptions and IkReturnAction need defining within the target language.
+#
+# TODO: Provide operator equivalent member functions.
+
+#include "prototypes.idl"
+#include "interface.idl"
+
+[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface ICallbackIkFilter : nsISupports {
+	IIkReturn Invoke(in unsigned long vcount, [array, size_is(vcount)] in float v, in IRobotManipulator m, in IIkParameterization p);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IIkReturnCustomDataKVP : nsISupports {
+	attribute string key;
+	void GetValue(out unsigned long count, [array, size_is(count)] out float value);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IIkReturn : nsISupports {
+	#IkReturn(IkReturnAction action)
+	boolean Append(in long r);
+	void Clear();
+	
+	void GetSolution(out unsigned long count, [array, size_is(count)] out float solution);
+	void GetCustomData(out unsigned long count, [array, size_is(count)] out IIkReturnCustomDataKVP customdata);
+	attribute long _action;
+	attribute IUserData _userdata;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IIkSolverBaseSolution : nsISupports {
+	void GetSolution(out unsigned long solutionCount, [array, size_is(solutionCount)] out float solution);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IIkSolverBase : IInterfaceBase {
+	#IIkSolverBase(IEnvironmentBase penv) : IInterfaceBase(PT_InverseKinematicsSolver, penv);
+    #~IIkSolverBase();
+    boolean Init(in IRobotManipulator pmanip);
+	IRobotManipulator GetManipulator();
+	IUserData RegisterCustomFilter(in long priority, in ICallbackIkFilter filterfn);
+	long GetNumFreeParameters();
+	boolean GetFreeParameters(out unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] out float vFreeParameters);
+	boolean Solve1(in IIkParameterization param, in unsigned long q0count, [array, size_is(q0count)] in float q0, in long filteroptions, out IIkSolverBaseSolution solution);
+	boolean Solve2(in IIkParameterization param, in unsigned long q0count, [array, size_is(q0count)] in float q0, in long filteroptions, out IIkReturn ikreturn);
+	boolean SolveAll1(in IIkParameterization param, in long filteroptions, out unsigned long solutionCount, [array, size_is(solutionCount)] out IIkSolverBaseSolution solution);
+	boolean SolveAll2(in IIkParameterization param, in long filteroptions, out unsigned long ikreturnsCount, [array, size_is(ikreturnsCount)] out IIkReturn ikreturns);
+	boolean Solve3(in IIkParameterization param, in unsigned long q0count, [array, size_is(q0count)] in float q0, in unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] in float vFreeParameters, in long filteroptions, out IIkSolverBaseSolution solution);
+	boolean Solve4(in IIkParameterization param, in unsigned long q0count, [array, size_is(q0count)] in float q0, in unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] in float vFreeParameters, in long filteroptions, out IIkReturn ikreturn);
+	boolean SolveAll3(in IIkParameterization param, in unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] in float vFreeParameters, in long filteroptions, out unsigned long solutionCount, [array, size_is(solutionCount)] out IIkSolverBaseSolution solution);
+	boolean SolveAll4(in IIkParameterization param, in unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] in float vFreeParameters, in long filteroptions, out unsigned long ikreturnsCount, [array, size_is(ikreturnsCount)] out IIkReturn ikreturns);
+	boolean Supports(in long iktype);
+	long CallFilters(in IIkParameterization param, out IIkReturn ikreturn);
+};

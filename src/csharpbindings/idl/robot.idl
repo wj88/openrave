@@ -1,0 +1,245 @@
+# Written by Dr Jodie Wetherall <wj88@gre.ac.uk>, School of Engineering, University of Greenwich
+#
+# This file is intended to support OO bindings to the OpenRAVE API. It assumes
+# the same licencing scheme as OpenRAVE.
+#
+# OpenRAVE is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Maps to the declarations in /include/openrave/robot.h
+
+#include "prototypes.idl"
+#include "kinbody.idl"
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRobotManipulatorInfo : nsISupports {
+	#ManipulatorInfo() : _vdirection(in 0,0,1)
+	#~ManipulatorInfo();
+	attribute string _name;
+	attribute string _sBaseLinkName;
+	attribute string _sEffectorLinkName;
+	attribute ITransformF _tLocalTool;
+	void GetClosingDirection(out unsigned long count, [array, size_is(count)] out float v);
+	void SetClosingDirection(in unsigned long count, [array, size_is(count)] in float v);
+	attribute IVectorF _vdirection;
+	attribute string _sIkSolverXMLId; ///< xml id of the IkSolver interface to attach
+	void GetGripperJointNames(out unsigned long count, [array, size_is(count)] out string v);
+	void SetGripperJointNames(in unsigned long count, [array, size_is(count)] in string v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRobotManipulator : nsISupports {
+	#~Manipulator();
+	IRobotManipulatorInfo GetInfo();
+	ITransformF GetTransform();
+	void GetVelocity(out IVectorF v1, out IVectorF v2);
+	ITransformF GetEndEffectorTransform();
+	string GetName();
+	IRobotBase GetRobot();
+	boolean SetIkSolver(in IIkSolverBase iksolver);
+	IIkSolverBase GetIkSolver();
+	IKinBodyLink GetBase();
+	IKinBodyLink GetEndEffector();
+	ITransformF GetLocalToolTransform();
+	void SetLocalToolTransform(in ITransformF t);
+	void SetName(in string name);
+	void GetGripperIndices(in unsigned long count, [array, size_is(count)] in long v);
+	void GetArmIndices(in unsigned long count, [array, size_is(count)] in long v);
+	void GetClosingDirection(in unsigned long count, [array, size_is(count)] in float v);
+	void SetLocalToolDirection(in IVectorF direction);
+	IVectorF GetLocalToolDirection();
+	IVectorF GetDirection();
+	boolean FindIKSolution1(in IIkParameterization param, out unsigned long solutionCount, [array, size_is(solutionCount)] out float solution, in long filteroptions);
+	boolean FindIKSolution2(in IIkParameterization param, in unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] in float vFreeParameters, out unsigned long solutionCount, [array, size_is(solutionCount)] out float solution, in long filteroptions);
+	boolean FindIKSolution3(in IIkParameterization param, in long filteroptions, out IIkReturn ikreturn);
+	boolean FindIKSolution4(in IIkParameterization param, in unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] in float vFreeParameters, in long filteroptions, out IIkReturn ikreturn);
+	# Will have to come back to this once I've sussed out how to do aIVectorF ofIVectorFs.
+	#bool FindIKSolutions(in IkParameterization& param, std::vector<std::vector<float> >& solutions, int filteroptions);
+	#bool FindIKSolutions(in IkParameterization& param, std::vector<float>& vFreeParameters, std::vector<std::vector<float> >& solutions, int filteroptions);
+	boolean FindIKSolutions1(in IIkParameterization param, in long filteroptions, in unsigned long vikreturnsCount, [array, size_is(vikreturnsCount)] in IIkReturn vikreturns);
+	boolean FindIKSolutions2(in IIkParameterization param, in unsigned long vFreeParametersCount, [array, size_is(vFreeParametersCount)] in float vFreeParameters, in long filteroptions, in unsigned long vikreturnsCount, [array, size_is(vikreturnsCount)] in IIkReturn vikreturns);
+	IIkParameterization GetIkParameterization1(in long type, in boolean inworld);
+	IIkParameterization GetIkParameterization2(in IIkParameterization ikparam, in boolean inworld);
+	void GetChildJoints(in unsigned long vjointsCount, [array, size_is(vjointsCount)] in IKinBodyJoint vjoints);
+	void GetChildDOFIndices(in unsigned long vdofndicesCount, [array, size_is(vdofndicesCount)] in long vdofndices);
+	boolean IsChildLink(in IKinBodyLink plink);
+	void GetChildLinks(in unsigned long vlinksCount, [array, size_is(vlinksCount)] in IKinBodyLink vlinks);
+	void GetIndependentLinks(in unsigned long vlinksCount, [array, size_is(vlinksCount)] in IKinBodyLink vlinks);
+	boolean CheckEndEffectorCollision1(in ITransformF tEE, out ICollisionReport report);
+	boolean CheckEndEffectorSelfCollision1(in ITransformF tEE, out ICollisionReport report);
+	boolean CheckEndEffectorCollision2(in IIkParameterization ikparam, out ICollisionReport report);
+	boolean CheckEndEffectorSelfCollision2(in IIkParameterization ikparam, out ICollisionReport report);
+	boolean CheckIndependentCollision3(out ICollisionReport report);
+	boolean IsGrabbing(in IKinBody body);
+	void CalculateJacobian(in unsigned long jacobianCount, [array, size_is(jacobianCount)] in float jacobian);
+	# At the moment, cannot implemented array of arrays.
+	#void CalculateJacobian(in boost::multi_array<float,2>& jacobian)
+	void CalculateRotationJacobian(in unsigned long jacobianCount, [array, size_is(jacobianCount)] in float jacobian);
+	#void CalculateRotationJacobian(in boost::multi_array<float,2>& jacobian);
+	void CalculateAngularVelocityJacobian(in unsigned long jacobianCount, [array, size_is(jacobianCount)] in float jacobian);
+	#void CalculateAngularVelocityJacobian(in boost::multi_array<float,2>& jacobian);
+	IConfigurationSpecification GetArmConfigurationSpecification(in string interpolation);
+	void serialize(in nsIOutputStream o, in long options);
+	string GetStructureHash();
+	string GetKinematicsStructureHash();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRobotAttachedSensorInfo : nsISupports {
+	#AttachedSensorInfo();
+	#~AttachedSensorInfo();
+	attribute string _name;
+	attribute string _linkname;
+	attribute ITransformF _trelative;
+	attribute string _sensorname;
+	attribute ISensorGeometry _sensorgeometry;
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRobotAttachedSensor : nsISupports {
+	#AttachedSensor(in RobotBasePtr probot);
+	#AttachedSensor(in RobotBasePtr probot, AttachedSensor &sensor, int cloningoptions);
+	#~AttachedSensor();
+	ISensorBase GetSensor();
+	IKinBodyLink GetAttachingLink();
+	ITransformF GetRelativeTransform();
+	ITransformF GetTransform();
+	IRobotBase GetRobot();
+	string GetName();
+	ISensorData GetData();
+	void SetRelativeTransform(in ITransformF t);
+	void serialize(in nsIOutputStream o, in long options);
+	string GetStructureHash();
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRobotGrabbedInfo : nsISupports {
+	attribute string _grabbedname;
+	attribute string _robotlinkname;
+	attribute ITransformF _trelative;
+	void GetRobotLinksToIgnore(out unsigned long count, [array, size_is(count)] out long v);
+	void SetRobotLinksToIgnore(in unsigned long count, [array, size_is(count)] in long v);
+};
+
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRobotStateSaver : IKinBodyStateSaver {
+	#RobotStateSaver(in RobotBasePtr probot, int options = Save_LinkTransformation|Save_LinkEnable|Save_ActiveDOF|Save_ActiveManipulator);
+	#~RobotStateSaver();
+	void RestoreRobot(in IRobotBase robot);
+	#void ReleaseBody();
+};
+ 
+
+# Several methods are different to the base interface versions. These are redeclared with a 'B' postfix.
+[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+interface IRobotBase : IKinBody {
+	#void Destroy();
+	boolean InitB(in unsigned long linkinfosCount, [array, size_is(linkinfosCount)] in IKinBodyLinkInfo linkinfos, in unsigned long jointinfosCount, [array, size_is(jointinfosCount)] in IKinBodyJointInfo jointinfos, in unsigned long manipinfosCount, [array, size_is(manipinfosCount)] in IRobotManipulatorInfo manipinfos, in unsigned long attachedsensorinfosCount, [array, size_is(attachedsensorinfosCount)] in IRobotAttachedSensorInfo attachedsensorinfos);
+	void GetManipulators(out unsigned long count, [array, size_is(count)] out IRobotManipulator m);
+	IRobotManipulator GetManipulator(in string name);
+	void GetAttachedSensors(out unsigned long count, [array, size_is(count)] out IRobotAttachedSensorInfo v);
+	#void SetName(in string name);
+
+	#void SetDOFValues1(in unsigned long vJointValuesCount, [array, size_is(vJointValuesCount)] in float vJointValues, in unsigned long checklimits, in unsigned long dofindicessCount, [array, size_is(dofindicesCount)] in long dofindices);
+	#void SetDOFValues2(in unsigned long vJointValuesCount, [array, size_is(vJointValuesCount)] in float vJointValues, in ITransformF transbase, in unsigned long checklimits);
+	#void SetLinkTransformations1(in unsigned long transformsCount, [array, size_is(transformsCount)] in ITransformF transforms);
+	#void SetLinkTransformations2(in unsigned long transformsCount, [array, size_is(transformsCount)] in ITransformF transforms, in unsigned long dofbranchesCount, [array, size_is(dofbranchesCount)] in long dofbranches);
+	#boolean SetVelocity(in IVectorF linearvel, in IVectorF angularvel);
+	#void SetDOFVelocities1(in unsigned long dofvelocitiesCount, [array, size_is(dofvelocitiesCount)] in long dofvelocities, in IVectorF linearvel, in IVectorF angularvel, in unsigned long checklimits);
+	#void SetDOFVelocities2(in unsigned long dofvelocitiesCount, [array, size_is(dofvelocitiesCount)] in long dofvelocities, in unsigned long checklimits, in unsigned long dofindicessCount, [array, size_is(dofindicesCount)] in long dofindices);
+	#void SetTransform(in ITransformF trans);
+	void SetActiveDOFs1(in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices, in long affine);
+	void SetActiveDOFs2(in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices, in long affine, in IVectorF rotationaxis);
+	long GetActiveDOF();
+	long GetAffineDOF();
+	IConfigurationSpecification GetActiveConfigurationSpecification(in string interpolation);
+	void GetActiveDOFIndices(out unsigned long dofindicesCount, [array, size_is(dofindicesCount)] out long dofindices);
+	IVectorF GetAffineRotationAxis();
+	void SetAffineTranslationLimits(in IVectorF lower, in IVectorF upper);
+	void SetAffineRotationAxisLimits(in IVectorF lower, in IVectorF upper);
+	void SetAffineRotation3DLimits(in IVectorF lower, in IVectorF upper);
+	void SetAffineRotationQuatLimits(in IVectorF quatangle);
+	void SetAffineTranslationMaxVels(in IVectorF vels);
+	void SetAffineRotationAxisMaxVels(in IVectorF vels);
+	void SetAffineRotation3DMaxVels(in IVectorF vels);
+	void SetAffineRotationQuatMaxVels(in float vels);
+	void SetAffineTranslationResolution(in IVectorF resolution);
+	void SetAffineRotationAxisResolution(in IVectorF resolution);
+	void SetAffineRotation3DResolution(in IVectorF resolution);
+	void SetAffineRotationQuatResolution(in float resolution);
+	void SetAffineTranslationWeights(in IVectorF weights);
+	void SetAffineRotationAxisWeights(in IVectorF weights);
+	void SetAffineRotation3DWeights(in IVectorF weights);
+	void SetAffineRotationQuatWeights(in float weights);
+	void GetAffineTranslationLimits(out IVectorF lower, out IVectorF upper);
+	void GetAffineRotationAxisLimits(out IVectorF lower, out IVectorF upper);
+	void GetAffineRotation3DLimits(out IVectorF lower, out IVectorF upper);
+	IVectorF GetAffineRotationQuatLimits();
+    IVectorF GetAffineTranslationMaxVels();
+    IVectorF GetAffineRotationAxisMaxVels();
+    IVectorF GetAffineRotation3DMaxVels();
+    float GetAffineRotationQuatMaxVels();
+    IVectorF GetAffineTranslationResolution();
+    IVectorF GetAffineRotationAxisResolution();
+    IVectorF GetAffineRotation3DResolution();
+    float GetAffineRotationQuatResolution();
+    IVectorF GetAffineTranslationWeights();
+    IVectorF GetAffineRotationAxisWeights();
+    IVectorF GetAffineRotation3DWeights();
+    float GetAffineRotationQuatWeights();
+	void SetActiveDOFValues(in unsigned long count, [array, size_is(count)] in float v, in unsigned long checklimits);
+    void GetActiveDOFValues(out unsigned long count, [array, size_is(count)] out float v);
+    void SetActiveDOFVelocities(in unsigned long count, [array, size_is(count)] in float v, in unsigned long checklimits);
+    void GetActiveDOFVelocities(out unsigned long count, [array, size_is(count)] out float v);
+    void GetActiveDOFLimits(out unsigned long lowerCount, [array, size_is(lowerCount)] out float lower, out unsigned long upperCount, [array, size_is(upperCount)] out float upper);
+    void GetActiveDOFResolutions(out unsigned long count, [array, size_is(count)] out float v);
+    void GetActiveDOFWeights(out unsigned long count, [array, size_is(count)] out float vv);
+    void GetActiveDOFVelocityLimits(out unsigned long count, [array, size_is(count)] out float v);
+    void GetActiveDOFAccelerationLimits(out unsigned long count, [array, size_is(count)] out float v);
+    void GetActiveDOFMaxVel(out unsigned long count, [array, size_is(count)] out float v);
+	void GetActiveDOFMaxAccel(out unsigned long count, [array, size_is(count)] out float v);
+	void SubtractActiveDOFValues(out unsigned long q1Count, [array, size_is(q1Count)] out float q1, out unsigned long q2Count, [array, size_is(q2Count)] out float q2);
+    IRobotManipulator SetActiveManipulator1(in string manipname);
+    void SetActiveManipulator2(in IRobotManipulator pmanip);
+    IRobotManipulator GetActiveManipulator();
+	IRobotManipulator AddManipulator(in IRobotManipulatorInfo manipinfo);
+    void RemoveManipulator(in IRobotManipulator manip);
+	void CalculateActiveJacobian(in long index, in IVectorF offset, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian);
+    #void CalculateActiveJacobian(in long index, in IVectorF offset, boost::multi_array<dReal,2>& jacobian);
+    void CalculateActiveRotationJacobian(in long index, in IVectorF qInitialRot, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian);
+    #void CalculateActiveRotationJacobian(in long index, in IVectorF qInitialRot, boost::multi_array<dReal,2>& jacobian);
+	void CalculateActiveAngularVelocityJacobian(in long index, out unsigned long jacobianCount, [array, size_is(jacobianCount)] out float jacobian);
+    #void CalculateActiveAngularVelocityJacobian(in long index, boost::multi_array<dReal,2>& jacobian);
+    #void GetNonAdjacentLinks(out unsigned long count, [array, size_is(count)] out long links, in long adjacentoptions);
+	boolean Grab1(in IKinBody body, in IKinBodyLink pRobotLinkToGrabWith, in unsigned long setRobotLinksToIgnoreCount, [array, size_is(setRobotLinksToIgnoreCount)] in long setRobotLinksToIgnore);
+	boolean Grab2(in IKinBody body, in IKinBodyLink pRobotLinkToGrabWith);
+	boolean Grab3(in IKinBody body, in unsigned long setRobotLinksToIgnoreCount, [array, size_is(setRobotLinksToIgnoreCount)] in long setRobotLinksToIgnore);
+	boolean Grab4(in IKinBody body);
+	void ReleaseRobot(in IKinBody body);
+	void ReleaseAllGrabbed();
+	void RegrabAll();
+	IKinBodyLink IsGrabbing(in IKinBody body);
+	void GetGrabbed(out unsigned long vbodiesCount, [array, size_is(vbodiesCount)] out IKinBody vbodies);
+	void GetGrabbedInfo(out unsigned long vgrabbedinfoCount, [array, size_is(vgrabbedinfoCount)] out IRobotGrabbedInfo vgrabbedinfo);
+	void ResetGrabbed(in unsigned long vgrabbedinfoCount, [array, size_is(vgrabbedinfoCount)] in IRobotGrabbedInfo vgrabbedinfo);
+	void GetIgnoredLinksOfGrabbed(in IKinBody body, out unsigned long ignorelinksCount, [array, size_is(ignorelinksCount)] out IKinBodyLink ignorelinks);
+	#boolean CheckSelfCollision(out ICollisionReport report, ICollisionCheckerBase collisionchecker);
+	boolean CheckLinkCollision(in long IKinBodyLinkindex, in ITransformF tlinktrans, out ICollisionReport report);
+	boolean CheckLinkSelfCollision(in long IKinBodyLinkindex, in ITransformF tlinktrans, out ICollisionReport report);
+	#void Clone(in IInterfaceBase preference, in long cloningoptions);
+	#boolean IsRobot();
+	#void serialize(in nsIOutputStream o, in long options);
+	string GetRobotStructureHash();
+	IControllerBase GetController();
+	boolean SetController(in IControllerBase controller, in unsigned long dofindicesCount, [array, size_is(dofindicesCount)] in long dofindices, in long nControlTransformation);	
+};

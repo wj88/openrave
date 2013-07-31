@@ -24,18 +24,18 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(269B3BB2-425E-4451-A500-9B1F8AE6877C)]
 interface ICallbackIkFilter : nsISupports {
 	IIkReturn Invoke(in unsigned long vcount, [array, size_is(vcount)] in float v, in IRobotManipulator m, in IIkParameterization p);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(087E40B3-2B1B-4664-9A47-8D69B10019DE)]
 interface IIkReturnCustomDataKVP : nsISupports {
 	attribute string key;
 	void GetValue(out unsigned long count, [array, size_is(count)] out float value);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(91D26120-EC73-498B-B791-723E24532C94)]
 interface IIkReturn : nsISupports {
 	#IkReturn(IkReturnAction action)
 	boolean Append(in long r);
@@ -47,12 +47,12 @@ interface IIkReturn : nsISupports {
 	attribute IUserData _userdata;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(AA989E28-16AA-4C2F-A246-DDC22998BBA0)]
 interface IIkSolverBaseSolution : nsISupports {
 	void GetSolution(out unsigned long solutionCount, [array, size_is(solutionCount)] out float solution);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(BECA01B0-1DA0-417B-9AF8-9090EBCFC1E7)]
 interface IIkSolverBase : IInterfaceBase {
 	#IIkSolverBase(IEnvironmentBase penv) : IInterfaceBase(PT_InverseKinematicsSolver, penv);
     #~IIkSolverBase();

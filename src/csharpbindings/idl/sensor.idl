@@ -23,12 +23,12 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(06BA6453-6725-4831-9895-2D6121E0A02B)]
 interface ICallbackSensorData : nsISupports {
 	void Invoke(in ISensorData data);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(948D92C9-EE6E-40A5-914C-C5445A7B2573)]
 interface ISensorData : nsISupports {
 	#~SensorData();
     long GetType();
@@ -37,7 +37,7 @@ interface ISensorData : nsISupports {
     attribute ITransformF __trans;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(8882E854-60B1-4DCB-9401-4B36A0122F44)]
 interface ISensorLaserData : ISensorData {
 	void GetPositions(out unsigned long count, [array, size_is(count)] out float v);
 	void SetPositions(in unsigned long count, [array, size_is(count)] in float v);
@@ -47,13 +47,13 @@ interface ISensorLaserData : ISensorData {
 	void SetIntensity(in unsigned long count, [array, size_is(count)] in float v);
 }; 
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(20C7EB60-B9E4-481F-8C92-7B27B67F429F)]
 interface ISensorCameraData : ISensorData {
 	void GetImageData(out unsigned long count, [array, size_is(count)] out octet v);
 	void SetImageData(in unsigned long count, [array, size_is(count)] in octet v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(E0F36604-9E0F-4D32-8622-BF4F972000BC)]
 interface ISensorJontEncoderData : ISensorData {
 	void GetEncoderValues(out unsigned long count, [array, size_is(count)] out float v);
 	void SetEncoderValues(in unsigned long count, [array, size_is(count)] in float v);
@@ -61,13 +61,13 @@ interface ISensorJontEncoderData : ISensorData {
 	void SetEncoderVelocity(in unsigned long count, [array, size_is(count)] in float v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(DEC7A214-BB43-4FE9-A42D-3C3A316E9481)]
 interface ISensorForce6DData : ISensorData {
 	attribute IVectorF force;
     attribute IVectorF torque;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6C755583-C18D-40D3-84A5-7690BE29E2B0)]
 interface ISensorIMUData : ISensorData {
 	attribute IVectorF rotation;
     attribute IVectorF angular_velocity;
@@ -80,7 +80,7 @@ interface ISensorIMUData : ISensorData {
 	void SetLinearAccelerationCovariance(in unsigned long count, [array, size_is(count)] in float v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(E0893E46-562A-419A-982B-0F5FA3266C28)]
 interface ISensorOdometryData : ISensorData {
 	attribute ITransformF pose;
     attribute IVectorF linear_velocity;
@@ -91,7 +91,7 @@ interface ISensorOdometryData : ISensorData {
 	void SetVelocityCovariance(in unsigned long count, [array, size_is(count)] in float v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6363E45B-F90D-4737-A168-E947A22B6024)]
 interface ISensorTactileData : ISensorData {
 	void GetForces(out unsigned long count, [array, size_is(count)] out IVectorF v);
 	void SetForces(in unsigned long count, [array, size_is(count)] in IVectorF v);
@@ -99,7 +99,7 @@ interface ISensorTactileData : ISensorData {
 	void SetForceCovariance(in unsigned long count, [array, size_is(count)] in float v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(C319957F-C1C6-4D7A-AB11-CCF29C217535)]
 interface ISensorActuatorData : ISensorData {
 	#ActuatorSensorData() : state(AS_Undefined), measuredcurrent(0), measuredtemperature(0), appliedcurrent(0)
 	attribute long state;
@@ -108,13 +108,13 @@ interface ISensorActuatorData : ISensorData {
     attribute float appliedcurrent;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(F019CA23-AC75-4136-81D7-E7ED01837B4C)]
 interface ISensorGeometry : nsISupports {
 	#~SensorGeometry();
     long GetType();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(B56CF8C8-6128-45F3-887F-44450BD7D618)]
 interface ISensorGeometryLaserData : ISensorGeometry {
 	#LaserGeomData() : min_range(0), max_range(0), time_increment(0), time_scan(0)
 	void GetMinAngle(out unsigned long count, [array, size_is(count)] out float v);
@@ -129,7 +129,7 @@ interface ISensorGeometryLaserData : ISensorGeometry {
 	attribute float time_scan; 
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(598CC6B5-E8A0-45E3-B2CA-C073B2595B64)]
 interface ISensorGeometryCameraData : ISensorGeometry {
 	#CameraGeomData() : width(0), height(0);
     attribute ICameraIntrinsicsF KK;
@@ -137,29 +137,29 @@ interface ISensorGeometryCameraData : ISensorGeometry {
 	attribute long height;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(EC152587-F12E-4385-AC3C-91AF58BBA8EA)]
 interface ISensorGeometryJointEncoderData : ISensorGeometry {
 	#JointEncoderGeomData() : resolution(0);
 	void GetResolution(out unsigned long count, [array, size_is(count)] out float v);
 	void SetResolution(in unsigned long count, [array, size_is(count)] in float v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6B6E8020-F37C-43C0-BD07-76B0C5F5E450)]
 interface ISensorGeometryForce6DData : ISensorGeometry {
 
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(C0B44780-5948-42D6-B161-157EA4EC865C)]
 interface ISensorGeometryIMUData : ISensorGeometry {
 	attribute float time_measurement;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(37743489-2573-4C96-B40F-891FADB4B0EF)]
 interface ISensorGeometryOdometryData : ISensorGeometry {
 	attribute string targetid;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(8962286E-0D92-4A2D-B5A4-734474EECDC5)]
 interface ISensorGeometryTactileDataFriction : nsISupports {
 	attribute string name;
 	attribute float sigma_0;
@@ -168,7 +168,7 @@ interface ISensorGeometryTactileDataFriction : nsISupports {
     attribute float mu_d;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(CC0C9DC5-751B-41A8-94A5-24E17D623BDE)]
 interface ISensorGeometryTactileData : ISensorGeometry {
 	void GetPositions(out unsigned long count, [array, size_is(count)] out IVectorF v);
 	void SetPositions(in unsigned long count, [array, size_is(count)] in IVectorF v);
@@ -177,7 +177,7 @@ interface ISensorGeometryTactileData : ISensorGeometry {
 	void SetFrictionMap(in unsigned long count, [array, size_is(count)] in ISensorGeometryTactileDataFriction v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(F299A124-C479-4012-8F49-2E0B9741D56E)]
 interface ISensorGeometryActuatorData : ISensorGeometry {
 	attribute float maxtorque;
 	attribute float maxcurrent;
@@ -189,7 +189,7 @@ interface ISensorGeometryActuatorData : ISensorGeometry {
 	attribute float viscousfriction;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(297E4A06-F0D4-4CA3-8D0C-12D4A4A22FC1)]
 interface ISensorBase : IInterfaceBase {
 	#SensorBase(EnvironmentBasePtr penv) : InterfaceBase(PT_Sensor, penv);
     #~SensorBase();

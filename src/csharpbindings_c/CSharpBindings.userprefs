@@ -1,6 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="OpenRAVE/Body.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="bodyfunctions/Main.cs">
     <Files>
       <File FileName="OpenRAVE/Support.cs" Line="56" Column="29" />
       <File FileName="OpenRAVE/Context.cs" Line="25" Column="1" />
@@ -15,8 +15,10 @@
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
-          <Node name="bodyfunctions" expanded="True" />
+        <State expanded="True">
+          <Node name="bodyfunctions" expanded="True">
+            <Node name="Main.cs" selected="True" />
+          </Node>
           <Node name="customgeometry" expanded="True" />
           <Node name="OpenRAVE" expanded="True" />
           <Node name="rrtplanning" expanded="True" />

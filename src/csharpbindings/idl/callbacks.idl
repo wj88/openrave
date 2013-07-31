@@ -18,12 +18,12 @@
 
 #include "prototypes.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(545BC716-18E6-4179-9A34-76BAF5A74F61)]
 interface ICallback : nsISupports {
 	void Invoke();
 };
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(B8244B49-9340-48F7-969A-5C75B76EE47D)]
 interface ICallbackUserCheck : nsISupports {
 	boolean Invoke();
 };

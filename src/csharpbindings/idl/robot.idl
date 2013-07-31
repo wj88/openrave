@@ -21,7 +21,7 @@
 #include "prototypes.idl"
 #include "kinbody.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(D948F3B2-5CE9-4E65-B6A1-48278DBEBE94)]
 interface IRobotManipulatorInfo : nsISupports {
 	#ManipulatorInfo() : _vdirection(in 0,0,1)
 	#~ManipulatorInfo();
@@ -37,7 +37,7 @@ interface IRobotManipulatorInfo : nsISupports {
 	void SetGripperJointNames(in unsigned long count, [array, size_is(count)] in string v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(91908E84-E3B8-48C4-BAC5-2A29E23569DD)]
 interface IRobotManipulator : nsISupports {
 	#~Manipulator();
 	IRobotManipulatorInfo GetInfo();
@@ -94,7 +94,7 @@ interface IRobotManipulator : nsISupports {
 	string GetKinematicsStructureHash();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(9F3815E0-CCDA-420B-BC1A-694E7CCB68EE)]
 interface IRobotAttachedSensorInfo : nsISupports {
 	#AttachedSensorInfo();
 	#~AttachedSensorInfo();
@@ -105,7 +105,7 @@ interface IRobotAttachedSensorInfo : nsISupports {
 	attribute ISensorGeometry _sensorgeometry;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(A1CDF8AD-5417-477E-A797-038B22F9035D)]
 interface IRobotAttachedSensor : nsISupports {
 	#AttachedSensor(in RobotBasePtr probot);
 	#AttachedSensor(in RobotBasePtr probot, AttachedSensor &sensor, int cloningoptions);
@@ -122,7 +122,7 @@ interface IRobotAttachedSensor : nsISupports {
 	string GetStructureHash();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(B688C702-7EB5-4040-853F-B9EDFA61F6E6)]
 interface IRobotGrabbedInfo : nsISupports {
 	attribute string _grabbedname;
 	attribute string _robotlinkname;
@@ -131,7 +131,7 @@ interface IRobotGrabbedInfo : nsISupports {
 	void SetRobotLinksToIgnore(in unsigned long count, [array, size_is(count)] in long v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(75A720AB-8BC2-44ED-8E91-A13D9F79B3D9)]
 interface IRobotStateSaver : IKinBodyStateSaver {
 	#RobotStateSaver(in RobotBasePtr probot, int options = Save_LinkTransformation|Save_LinkEnable|Save_ActiveDOF|Save_ActiveManipulator);
 	#~RobotStateSaver();
@@ -141,7 +141,7 @@ interface IRobotStateSaver : IKinBodyStateSaver {
  
 
 # Several methods are different to the base interface versions. These are redeclared with a 'B' postfix.
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(A0E071DC-DD48-4655-BC41-1294907866A4)]
 interface IRobotBase : IKinBody {
 	#void Destroy();
 	boolean InitB(in unsigned long linkinfosCount, [array, size_is(linkinfosCount)] in IKinBodyLinkInfo linkinfos, in unsigned long jointinfosCount, [array, size_is(jointinfosCount)] in IKinBodyJointInfo jointinfos, in unsigned long manipinfosCount, [array, size_is(manipinfosCount)] in IRobotManipulatorInfo manipinfos, in unsigned long attachedsensorinfosCount, [array, size_is(attachedsensorinfosCount)] in IRobotAttachedSensorInfo attachedsensorinfos);

@@ -23,7 +23,7 @@
 #include "openrave.idl"
 #include "kinbody.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(E6B2902A-38B8-429E-9D0F-035ACB5232CC)]
 interface ISensorSystemBase  : IInterfaceBase {
 	#SensorSystemBase(EnvironmentBasePtr penv) : InterfaceBase(PT_SensorSystem, penv);
     #virtual ~SensorSystemBase();#
@@ -36,7 +36,7 @@ interface ISensorSystemBase  : IInterfaceBase {
     boolean SwitchBody(in IKinBody pbody1, in IKinBody pbody2);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(421925E2-10B7-4B61-955C-F57FF4487DEE)]
 interface ISimpleSensorSystemXMLData : IXMLReadable {
 	#XMLData(const std::string& xmlid) : XMLReadable(xmlid), id(0);
 	void copy(in ISimpleSensorSystemXMLData pdata);
@@ -47,7 +47,7 @@ interface ISimpleSensorSystemXMLData : IXMLReadable {
 	attribute ITransformF transPreOffset;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(7A86ACCB-EE1E-4300-9413-62CF91B06429)]
 interface ISimpleSensorSystemBodyData : IKinBodyManageData {
 	#BodyData(SensorSystemBasePtr psensorsystem, KinBodyPtr pbody, boost::shared_ptr<XMLData> initdata) : KinBody::ManageData(psensorsystem), _initdata(initdata), bPresent(false), bEnabled(true), bLock(false);
 	#IXMLReadable GetData();
@@ -61,7 +61,7 @@ interface ISimpleSensorSystemBodyData : IKinBodyManageData {
 	ITransformF GetRecentTransform();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(15500D68-E9D7-49AB-9551-F9CA752AA7D8)]
 interface ISimpleSensorSystemSimpleXMLReader : IBaseXMLReader {
 	#SimpleXMLReader(boost::shared_ptr<XMLData>);
 	#IXMLReadable GetReadable();
@@ -70,7 +70,7 @@ interface ISimpleSensorSystemSimpleXMLReader : IBaseXMLReader {
 	#void characters(out string ch);
 }; 
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(20804F2B-0863-41C3-84E4-822A2FE03476)]
 interface ISimpleSensorSystem : ISensorSystemBase {
 	#SimpleSensorSystem(const std::string& xmlid, EnvironmentBasePtr penv);
     #~SimpleSensorSystem();

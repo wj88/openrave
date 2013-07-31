@@ -24,22 +24,22 @@
 #include "openrave.idl"
 #include "interface.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(17914595-60EB-4627-A331-E0A39780606B)]
 interface ICallbackPlan : nsISupports {
 	long Invoke(in IPlannerProgress progress);
 };
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(7CD457DA-1167-469C-852E-2BD89CD28BB9)]
 interface ICallbackProcessF1 : nsISupports {
 	float Invoke(in unsigned long count, [array, size_is(count)] in float v);
 };
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(0D2F4CD5-68C7-4650-AA64-89ADC68AA463)]
 interface ICallbackProcessF2 : nsISupports {
 	float Invoke(in unsigned long count1, [array, size_is(count1)] in float v1, in unsigned long count2, [array, size_is(count2)] in float v2);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(4CB7250E-265B-4178-8211-B2C9DF8A8DB6)]
 interface IConstraintFilterReturn : nsISupports {
 	#ConstraintFilterReturn() : _fTimeWhenInvalid(0), _returncode(0)
 	void Clear();
@@ -58,7 +58,7 @@ interface IConstraintFilterReturn : nsISupports {
     attribute long _returncode;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(7987F6F5-4702-4E3D-9D75-FC559B100305)]
 interface IPlannerBaseParametersStateSaver {
 	#StateSaver(boost::shared_ptr<PlannerParameters> params);
     #~StateSaver();
@@ -68,7 +68,7 @@ interface IPlannerBaseParametersStateSaver {
 
 # There is a problem here, in that XPIDL doesn't permit multiple inheritance. Logically, I
 # cannot see the problem with it, but hey.
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(F42D9F6E-5AA4-4343-8867-FF4A657ED121)]
 #interface IPlannerBaseParameters : IBaseXMLReader, IXMLReadable {
 interface IPlannerBaseParameters : IBaseXMLReader {
 	#PlannerParameters();
@@ -122,13 +122,13 @@ interface IPlannerBaseParameters : IBaseXMLReader {
 	void SetInternalSamplers(in unsigned long count, [array, size_is(count)] in ISpaceSamplerBase v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(FAA76E1C-2EC8-4C3A-ADDD-2CD537149D3D)]
 interface IPlannerProgress : nsISupports {
 	#PlannerProgress();
     attribute long _iteration;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(170D66E4-0088-4FC7-8FA7-E1F1005AFA9C)]
 interface IPlannerBase : IInterfaceBase {
 	#PlannerBase(EnvironmentBasePtr penv);
     #~PlannerBase();

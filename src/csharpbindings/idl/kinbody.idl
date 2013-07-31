@@ -24,7 +24,7 @@
 #include "openrave.idl"
 #include "interface.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(1D570C1A-1047-43FD-A14A-35F4029C454C)]
 interface IKinBodyGeometryInfo : IXMLReadable {
 	#GeometryInfo();
     #~GeometryInfo();
@@ -49,13 +49,13 @@ interface IKinBodyGeometryInfo : IXMLReadable {
 	attribute boolean _bModifiable;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6F40A432-F606-4CD3-BAEB-5DA1F2848027)]
 interface IKinBodyLinkInfoExtraGeometryKVP : nsISupports {
 	attribute string key;
 	void GetValue(out unsigned long count, [array, size_is(count)] out IKinBodyGeometryInfo geometryinfo);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6DFB1184-9184-41B9-A899-FB9D30F88291)]
 interface IKinBodyLinkInfo : IXMLReadable {
 	#LinkInfo();
     #~LinkInfo();
@@ -83,7 +83,7 @@ interface IKinBodyLinkInfo : IXMLReadable {
 	attribute boolean _bIsEnabled;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(9144529B-DFD3-4305-9B1A-78CDD319FD25)]
 interface IKinBodyLinkGeometry : nsISupports {
 	#Geometry(IKinBodyLink parent, IKinBodyGeometryInfo info);
     #virtual ~Geometry();
@@ -114,7 +114,7 @@ interface IKinBodyLinkGeometry : nsISupports {
 	void SetRenderFilename(in string renderfilename);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(275408C5-2E6A-421B-99D5-9816402E88C7)]
 interface IKinBodyLink : nsISupports {
 	#Link(IKinBody parent);
     #~Link();
@@ -175,14 +175,14 @@ interface IKinBodyLink : nsISupports {
 	IKinBodyLinkInfo UpdateAndGetInfo();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(AE23F413-94AA-457E-B7CC-183FB10F9859)]
 interface IKinBodyMimicInfo : nsISupports {
 	attribute string _equationsPosition;
 	attribute string _equationsVelocity;
 	attribute string _equationsAcceleration;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(55187DAF-2529-4583-BF68-05B6AF351009)]
 interface IKinBodyMimicDOFFormat : nsISupports {
 	attribute short jointindex;
 	attribute short dofindex;
@@ -190,13 +190,13 @@ interface IKinBodyMimicDOFFormat : nsISupports {
 	IKinBodyJoint GetJoint(in IKinBody parent);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(A0396250-A6E1-454F-9F5D-8406F7769D02)]
 interface IKinBodyMimicDOFHierarchy : nsISupports {
 	attribute short dofindex;
     attribute unsigned short dofformatindex;		
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(F9B14560-D091-4773-A1CA-406394980556)]
 interface IKinBodyMimic : nsISupports {
 	attribute string _equationsPosition;
 	attribute string _equationsVelocity;
@@ -215,7 +215,7 @@ interface IKinBodyMimic : nsISupports {
 	#void SetAccelerationFunctions(in unsigned long count, [array, size_is(count)] in OpenRAVEFunctionParserRealPtr _accelfns);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(5E2C3822-0812-48A4-827D-59B2B8E8CAC7)]
 interface IKinBodyJointInfo : IXMLReadable {
 	#JointInfo();
     #~JointInfo();
@@ -275,7 +275,7 @@ interface IKinBodyJointInfo : IXMLReadable {
 	attribute boolean _bIsActive;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(1FD78F7B-7E37-4DE1-9F1D-49092E1E9C4A)]
 interface IKinBodyJoint : nsISupports {
 	#Joint(IKinBody parent, long type);
     #virtual ~Joint();
@@ -344,7 +344,7 @@ interface IKinBodyJoint : nsISupports {
 	IKinBodyJointInfo UpdateAndGetInfo();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(05961D1C-8558-4549-8338-4A236E23D721)]
 interface IKinBodyState : nsISupports {
 	#BodyState();
 	#~BodyState();
@@ -357,7 +357,7 @@ interface IKinBodyState : nsISupports {
     attribute long environmentid;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(0DDB335B-68A6-40EC-AFCC-8D8DCB49A475)]
 interface IKinBodyManageData : nsISupports {
 	#ManageData(SensorSystemBasePtr psensorsystem);
     #~ManageData();
@@ -370,7 +370,7 @@ interface IKinBodyManageData : nsISupports {
 	boolean Lock(in boolean bDoLock);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(93C0C387-C08E-4D32-9A81-150CB6C1FDC4)]
 interface IKinBodyStateSaver : nsISupports {
 	#KinBodyStateSaver(in IKinBody pbody, in long options);
     #~KinBodyStateSaver();
@@ -380,7 +380,7 @@ interface IKinBodyStateSaver : nsISupports {
 	void ReleaseBody();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(B5716493-6C21-404D-AA98-0380492A33C1)]
 interface IKinBody : IInterfaceBase {
 	long GetInterfaceTypeStatic();
 	void Destroy();

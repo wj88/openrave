@@ -23,14 +23,14 @@
 
 #include "prototypes.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6C090524-E32F-4D14-A45D-99065F918054)]
 interface IVectorF : nsISupports {
 	attribute float X;
 	attribute float Y;
 	attribute float Z;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(BA479B40-9490-49BE-8604-A86CDA13E231)]
 interface ITransformF : nsISupports {
 	attribute float W;
 	attribute float X;
@@ -38,7 +38,7 @@ interface ITransformF : nsISupports {
 	attribute float Z;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(A8766E71-7DB2-4655-84F5-D771FAFD0C77)]
 interface ITransformMatrixF : nsISupports {
 	attribute float m1;
 	attribute float m2;
@@ -54,25 +54,25 @@ interface ITransformMatrixF : nsISupports {
 	attribute float m12;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(0D1DE9FD-15D9-4043-9C7F-AE106F4DCC72)]
 interface IRayF : nsISupports {
 	attribute IVectorF pos;
 	attribute IVectorF dir;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(53F71FE2-FF63-4F57-8D38-4A88B8EB9AC9)]
 interface IAABBF : nsISupports {
 	attribute IVectorF vpos;
 	attribute IVectorF vextents;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(60F3B281-58AF-4418-BC93-BCF382238675)]
 interface IOrientedBoxF : nsISupports {
 	attribute ITransformF tranform;
 	attribute IVectorF extents;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(9276B631-34F3-44AB-8B5C-C8C965C5E0D7)]
 interface IOBBF : nsISupports {
 	attribute IVectorF right;
 	attribute IVectorF up;
@@ -81,14 +81,14 @@ interface IOBBF : nsISupports {
 	attribute IVectorF extents;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(2AF83F70-7AC3-4746-A89B-AB25DE121E66)]
 interface ITriangleF : nsISupports {
 	attribute IVectorF v1;
 	attribute IVectorF v2;
 	attribute IVectorF v3;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(1646F6B1-5BFE-4432-A25A-6E65B2F2F8E1)]
 interface IFrustamF : nsISupports {
 	attribute IVectorF right;
 	attribute IVectorF up;
@@ -104,7 +104,7 @@ interface IFrustamF : nsISupports {
 	attribute float fsinfovy;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(D58B1313-6D13-4CEE-8240-69FDAB6B97B6)]
 interface ICameraIntrinsicsF : nsISupports {
 	attribute float fx;
 	attribute float fy;

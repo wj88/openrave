@@ -18,7 +18,7 @@
 
 #include "prototypes.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(37E5D631-F42A-497F-BB09-A142F0CDF505)]
 interface IMutex : nsISupports {
 
 };

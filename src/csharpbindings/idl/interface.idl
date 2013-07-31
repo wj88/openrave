@@ -21,7 +21,7 @@
 
 #include "prototypes.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(6F126A34-6C7A-41FB-AA4D-A815C62860AF)]
 interface ICallbackInterfaceCommand : nsISupports {
 	boolean Invoke(in nsIOutputStream os, in nsIInputStream is);
 };
@@ -29,18 +29,18 @@ interface ICallbackInterfaceCommand : nsISupports {
 # Not entirely sure whether having access to the ReadersMap from over XPCOM
 # is worth it. For now, we'll assume not until the requirement arises.
 
-#[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+#[scriptable, uuid(D050F31F-8813-4645-BD29-43B8F5445374)]
 #interface IInterfaceBaseReadersMapKVP : nsISupports {
 #	attribute string key;
 #	attribute XMLReadable value;
 #};
 
-#[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+#[scriptable, uuid(49710314-AC1D-44E6-BACF-8BDC9CBDBEBB)]
 #interface IInterfaceBaseReadersMap : nsISupports {
 #	XMLReadable Get(string key);
 #};
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(A37979D2-E650-4415-89A7-2712E1A19DC5)]
 interface IInterfaceCommand : nsISupports {
 	#InterfaceCommand();
     #InterfaceCommand(ICallbackInterfaceCommand newfn, string newhelp) : fn(newfn), help(newhelp);
@@ -48,7 +48,7 @@ interface IInterfaceCommand : nsISupports {
     attribute string help;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(787285B6-6DB7-4E80-A8FD-BAE201090723)]
 interface IInterfaceBase : nsISupports {
 	# Implementation is a static method in IRaveDatabase.
 	string GetInterfaceHash();

@@ -22,7 +22,7 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(3EEDFF54-136B-4A01-BB8E-64C0B41D615B)]
 interface IPhysicsEngineBase : IInterfaceBase {
 	#PhysicsEngineBase(EnvironmentBasePtr penv) : InterfaceBase(PT_PhysicsEngine, penv);
     #~PhysicsEngineBase();

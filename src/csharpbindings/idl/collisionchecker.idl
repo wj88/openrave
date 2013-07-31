@@ -29,14 +29,14 @@ interface ICollisionOptionsStateSaver;
 #include "geometry.idl"
 #include "interface.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(1E7EB7C1-678E-4944-99B5-3E3747E1DE54)]
 interface ICollisionReportContact : nsISupports {
     attribute IVectorF pos;
     attribute IVectorF norm;
 	attribute float depth;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(5082EA03-00BE-49B8-834F-ACB7391948AC)]
 interface ICollisionReport : nsISupports {
 	#CollisionReport();
 	attribute long options;
@@ -53,7 +53,7 @@ interface ICollisionReport : nsISupports {
 	string __str__();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(F09EE69E-9752-43B2-AF56-21D116E998D0)]
 interface ICollisionCheckerBase : IInterfaceBase {
 	boolean SetCollisionOptions(in long collisionoptions);
 	long GetCollisionOptions();
@@ -78,7 +78,7 @@ interface ICollisionCheckerBase : IInterfaceBase {
 	boolean CheckStandaloneSelfCollision2(in IKinBodyLink plink, out ICollisionReport report);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(5F7648D1-1F4D-4B1D-ABD8-F894C56A5043)]
 interface ICollisionOptionsStateSaver : nsISupports {
 	#CollisionOptionsStateSaver(CollisionCheckerBasePtr p, int newoptions, bool required=true);
     #virtual ~CollisionOptionsStateSaver();

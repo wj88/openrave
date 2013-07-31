@@ -21,24 +21,24 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(F3C54AAC-8141-412D-9015-85BC491E5CE8)]
 interface ICallbackViewerImage : nsISupports {
 	void Invoke(in unsigned long dataCount, [array, size_is(dataCount)] in octet data, in long width, in long height, in long depth);
 };
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(F5F4751C-44EE-4E12-96D1-FAAA2481E269)]
 interface ICallbackItemSelection : nsISupports {
 	boolean Invoke(in IKinBodyLink plink, in IVectorF offset, in IVectorF direction);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(0459E83D-4221-4D18-AD10-8B589C007548)]
 interface IGraphHandle : nsISupports {
 	#~GraphHandle();
 	void SetTransform(in ITransformF t);
     void SetShow(in boolean bshow);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(529F1AF5-BBB8-4CA6-B4FF-DE94B558F4D9)]
 interface IViewerBase : IInterfaceBase {
 	#ViewerBase(EnvironmentBasePtr penv) : InterfaceBase(PT_Viewer, penv);
     #~ViewerBase();

@@ -21,7 +21,7 @@
 #include "prototypes.idl"
 #include "openrave.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(F8D7F72F-E95F-44D8-A59B-1B1B323C782A)]
 interface IStringXMLReadable : IXMLReadable {
 	#StringXMLReadable(const std::string& xmlid, const std::string& data);
     void Serialize(in IBaseXMLWriter writer, in long options);
@@ -29,7 +29,7 @@ interface IStringXMLReadable : IXMLReadable {
     attribute string _data;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(31DEAB5A-71D5-466C-920D-2AACF9CDBA1C)]
 interface IHierarchicalXMLReadable : IXMLReadable {
 	#HierarchicalXMLReadable(const std::string& xmlid, const AttributesList& atts);
     #virtual ~HierarchicalXMLReadable();
@@ -40,7 +40,7 @@ interface IHierarchicalXMLReadable : IXMLReadable {
 	void SetListChildren(in unsigned long count, [array, size_is(count)] in IHierarchicalXMLReadable v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(83A5FDBA-6BA4-43DA-AFD3-ED5ECDD3078D)]
 interface ITrajectoryReader : IBaseXMLReader {
 	#TrajectoryReader(EnvironmentBasePtr env, TrajectoryBasePtr traj = TrajectoryBasePtr(), const AttributesList& atts=AttributesList());
     #long startElement(in string name, in nsIProperties atts);
@@ -49,7 +49,7 @@ interface ITrajectoryReader : IBaseXMLReader {
     ITrajectoryBase GetTrajectory();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(D77E8FA9-1AA5-4442-BD5C-8368FEE27AE9)]
 interface IGeometryInfoReader : IBaseXMLReader {
 	#GeometryInfoReader(KinBody::GeometryInfoPtr geom = KinBody::GeometryInfoPtr(), const AttributesList& atts=AttributesList());
     #long startElement(in string name, in nsIProperties atts);
@@ -61,7 +61,7 @@ interface IGeometryInfoReader : IBaseXMLReader {
     boolean IsOverwriteTransparency();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(117455D9-E5EE-451B-9313-016F3B74240E)]
 interface IHierarchicalXMLReader : IBaseXMLReader {
 	#HierarchicalXMLReader(const std::string& xmlid, const AttributesList& atts);
     #long startElement(in string name, in nsIProperties atts);
@@ -70,7 +70,7 @@ interface IHierarchicalXMLReader : IBaseXMLReader {
     #IXMLReadable GetReadable();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(B1E2F6C4-7EA4-4B31-A050-9EC5512C4E28)]
 interface IStreamXMLWriter : IBaseXMLReader {
 	#StreamXMLWriter(const std::string& xmltag, const AttributesList& atts=AttributesList());
     string GetFormat();

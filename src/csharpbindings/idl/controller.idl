@@ -21,7 +21,7 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(41370190-8B44-490F-A72B-4E79FAD6FD6F)]
 interface IControllerBase : IInterfaceBase {
 	#ControllerBase(EnvironmentBasePtr penv) : InterfaceBase(PT_Controller, penv);
     #~ControllerBase();
@@ -39,7 +39,7 @@ interface IControllerBase : IInterfaceBase {
     void GetTorque(out unsigned long torqueCount, [array, size_is(torqueCount)] out float torque);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(65E1797A-4A7C-4CCA-9149-64293CCAC332)]
 interface IMultiController : IControllerBase {
 	# Commented out inheritted members;
 	#boolean Init(in IRobotBase robot, in unsigned long dofindicescount, [array, size_is(dofindicescount)] in long dofindices, in long nControlTransformation);

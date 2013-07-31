@@ -21,17 +21,17 @@
 
 #include "prototypes.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(BC6EAF19-518A-4DB2-8C2C-823BDACC6C92)]
 interface ICallbackCollision : nsISupports {
 	long Invoke(in ICollisionReport report, in boolean collided);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(9FC5652F-240D-48FD-874B-C9F5DA79A2A1)]
 interface IEnvironmentMutex : nsISupports {
 
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(C68D1C06-8814-484A-806D-BC593C9B2A70)]
 interface IEnvironmentBase : nsISupports {
 	#EnvironmentBase();
     #~EnvironmentBase();

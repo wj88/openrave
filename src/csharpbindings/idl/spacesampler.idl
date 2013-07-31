@@ -22,7 +22,7 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(7CD02FB6-04F0-4603-B338-29F0A453B5BE)]
 interface ISpaceSamplerBase : IInterfaceBase {
 	#SpaceSamplerBase(EnvironmentBasePtr penv) : InterfaceBase(PT_SpaceSampler, penv);
     #~SpaceSamplerBase();

@@ -22,12 +22,12 @@
 
 #include "prototypes.idl"
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(C51BB413-D3DA-4C21-AB34-6652E666CBAE)]
 interface ICallbackSetConfigurationState : nsISupports {
 	void Invoke(in unsigned long count, [array, size_is(count)] in float v);
 };
 
-[function, scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[function, scriptable, uuid(354BCBFB-0585-453C-BF93-7C5202F4AF54)]
 interface ICallbackGetConfigurationState : nsISupports {
 	void Invoke(out unsigned long count, [array, size_is(count)] out float v);
 };
@@ -43,12 +43,12 @@ interface ICallbackGetConfigurationState : nsISupports {
 
 # The terminal related functions are not implemented.
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(CA95CB0A-1DD6-4523-9330-65427501E3CE)]
 interface IUserData : nsISupports {
 
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(53548A91-FC76-45D1-90EA-C68968DAA6D0)]
 interface ISerializableData : IUserData {
 	void Serialize(in nsIOutputStream O, in long options);
 	void Deserialize(in nsIInputStream I);
@@ -61,7 +61,7 @@ interface ISerializableData : IUserData {
 
 # The Printf related functions are not implemented.
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(E7D0B0CD-8EB7-448B-B979-D17F081A7E51)]
 interface IXMLReadable : IUserData {
 	#IXMLReadable(const std::string& xmlid) : __xmlid(xmlid);
     #~IXMLReadable();
@@ -70,7 +70,7 @@ interface IXMLReadable : IUserData {
 	void Serialize2(in IBaseXMLWriter writer, in long options);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(E932EE40-FAC4-4D70-A9B0-56623707890E)]
 interface IBaseXMLReader : nsISupports {
 	#IBaseXMLReader();
     #~IBaseXMLReader();
@@ -81,7 +81,7 @@ interface IBaseXMLReader : nsISupports {
 	attribute string _filename;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(BFE6E4FE-1922-4DBE-B31E-A7BF61331AAB)]
 interface IDummyXMLReader : nsISupports {
 	#IDummyXMLReader(const std::string& fieldname, const std::string& parentname, boost::shared_ptr<std::ostream> osrecord = boost::shared_ptr<std::ostream>());
     long startElement(in string name, in nsIProperties atts);
@@ -91,7 +91,7 @@ interface IDummyXMLReader : nsISupports {
     nsIOutputStream GetStream();
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6F2F984D-D8AF-4D0C-BDF2-AFEAF4CF07DE)]
 interface IBaseXMLWriter : nsISupports {
 	#~BaseXMLWriter();
 	string GetFormat();
@@ -102,7 +102,7 @@ interface IBaseXMLWriter : nsISupports {
 # The RaveGetIkParameterizationMap and RaveGetIkTypeFromUniqueId functions are
 # not implemented although could be Pinvoke'd.
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(2642466C-636E-4002-A0D2-E3F2E0B2A63A)]
 interface IConfigurationSpecificationReader : IBaseXMLReader {
 	#Reader(ConfigurationSpecification& spec);
     #long startElement(in string name, nsIProperties atts);
@@ -110,7 +110,7 @@ interface IConfigurationSpecificationReader : IBaseXMLReader {
     #void characters(out string ch);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(DDC7A51A-FA38-4CA4-AAC9-848731BCEAD9)]
 interface IConfigurationSpecificationGroup : nsISupports {
 	#Group() : offset(0), dof(0)
 	attribute long offset;
@@ -119,7 +119,7 @@ interface IConfigurationSpecificationGroup : nsISupports {
 	attribute string interpolation;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(A9D18BFD-15F1-4E24-B0E3-670E6495CE0B)]
 interface IConfigurationSpecification : nsISupports {
 	#~ConfigurationSpecification();
 	long GetDOF();
@@ -158,7 +158,7 @@ interface IConfigurationSpecification : nsISupports {
 	#std::vector<Group> _vgroups;
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(ECF50017-FE54-4708-B552-2E3EAB02824E)]
 interface IIkParameterization : nsISupports {
 	#IkParameterization();
     #IkParameterization(const Transform &t)
@@ -222,7 +222,7 @@ interface IIkParameterization : nsISupports {
 	IIkParameterization MultiplyTransformRight(in ITransformF t);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(6E59BB95-E205-4C3C-B1A0-6D37DF887179)]
 interface ITriMesh : nsISupports {
 	void GetVertices(out unsigned long count, [array, size_is(count)] out IVectorF values);
 	void SetVertices(in unsigned long count, [array, size_is(count)] in IVectorF values);

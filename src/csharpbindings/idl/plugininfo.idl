@@ -20,13 +20,13 @@
 
 #include "prototypes.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(7D5CFD51-5B2A-4E4F-A687-111E4BD5032B)]
 interface IPluginInfoMap : nsISupports {
 	attribute long InterfaceType;
 	void GetInterfaceNames(out unsigned long count, [array, size_is(count)] out string v);
 };
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(26049342-82D2-47EA-8029-0085F9018BC1)]
 interface IPluginInfo : nsISupports {
 	#PLUGININFO() : version(0)
 	void GetInterfaceNames(out unsigned long count, [array, size_is(count)] out IPluginInfoMap v);

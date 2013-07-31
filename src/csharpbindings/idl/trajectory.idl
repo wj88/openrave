@@ -21,7 +21,7 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(4CD2660D-0BE0-4F79-8A13-8F3D6A9A1D2B)]
 interface ITrajectoryBase : IInterfaceBase {
 	#TrajectoryBase(EnvironmentBasePtr penv);
     #~TrajectoryBase();

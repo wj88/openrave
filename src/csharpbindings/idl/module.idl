@@ -21,7 +21,7 @@
 #include "prototypes.idl"
 #include "interface.idl"
 
-[scriptable, uuid(00000000-0000-0000-0000-000000000000)]
+[scriptable, uuid(0BE6340E-70B0-45AF-AC8C-AC70904D1545)]
 interface IModuleBase : IInterfaceBase {
 	#ModuleBase(EnvironmentBasePtr penv) : InterfaceBase(PT_Module, penv);
     #virtual ~ModuleBase();
